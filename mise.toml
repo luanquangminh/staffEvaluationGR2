@@ -1,0 +1,255 @@
+# Staff Evaluation Hub - Mise Configuration
+# Usage: mise run <task>
+
+[env]
+# Default environment variables
+NODE_ENV = "development"
+
+[tools]
+node = "22"
+
+# ============================================================================
+# BUILD TASKS
+# ============================================================================
+
+[tasks.build]
+description = "Build both API and Hub for production"
+depends = ["build:api", "build:hub"]
+
+[tasks."build:api"]
+description = "Build the NestJS API"
+dir = "staffEvaluation-api"
+run = "pnpm build"
+
+[tasks."build:hub"]
+description = "Build the React Hub"
+dir = "staffEvaluation-hub"
+run = "pnpm build"
+
+# ============================================================================
+# DEVELOPMENT TASKS
+# ============================================================================
+
+[tasks.dev]
+description = "Start both API and Hub in development mode (background)"
+run = """
+#!/bin/bash
+echo "Starting development servers..."
+
+# Start API in background
+cd staffEvaluation-api && pnpm start:dev &
+API_PID=$!
+echo $API_PID > /tmp/staffeval-api.pid
+echo "API server started (PID: $API_PID)"
+
+# Start Hub in background
+cd ../staffEvaluation-hub && pnpm dev &
+HUB_PID=$!
+echo $HUB_PID > /tmp/staffeval-hub.pid
+echo "Hub server started (PID: $HUB_PID)"
+
+echo ""
+echo "=== Development servers running ==="
+echo "API: http://localhost:3001"
+echo "Hub: http://localhost:8080"
+echo "Swagger: http://localhost:3001/api"
+echo ""
+echo "Use 'mise run stop' to stop all servers"
+
+# Wait for both processes
+wait
+"""
+
+[tasks."dev:api"]
+description = "Start the NestJS API in development mode"
+dir = "staffEvaluation-api"
+run = "pnpm start:dev"
+
+[tasks."dev:hub"]
+description = "Start the React Hub in development mode"
+dir = "staffEvaluation-hub"
+run = "pnpm dev"
+
+# ============================================================================
+# STOP TASKS
+# ============================================================================
+
+[tasks.stop]
+description = "Stop all running development servers"
+run = """
+#!/bin/bash
+echo "Stopping all development servers..."
+
+# Kill processes on ports
+lsof -ti:3001 | xargs kill -9 2>/dev/null && echo "Stopped API server (port 3001)" || echo "API server not running"
+lsof -ti:8080 | xargs kill -9 2>/dev/null && echo "Stopped Hub server (port 8080)" || echo "Hub server not running"
+
+# Also try to kill by process name
+pkill -f "nest start" 2>/dev/null
+pkill -f "vite" 2>/dev/null
+
+# Clean up pidfiles
+rm -f /tmp/staffeval-api.pid 2>/dev/null
+rm -f /tmp/staffeval-hub.pid 2>/dev/null
+
+echo "All servers stopped."
+"""
+
+[tasks."stop:api"]
+description = "Stop the API server"
+run = """
+#!/bin/bash
+lsof -ti:3001 | xargs kill -9 2>/dev/null && echo "Stopped API server" || echo "API server not running"
+pkill -f "nest start" 2>/dev/null
+rm -f /tmp/staffeval-api.pid 2>/dev/null
+"""
+
+[tasks."stop:hub"]
+description = "Stop the Hub server"
+run = """
+#!/bin/bash
+lsof -ti:8080 | xargs kill -9 2>/dev/null && echo "Stopped Hub server" || echo "Hub server not running"
+pkill -f "vite" 2>/dev/null
+rm -f /tmp/staffeval-hub.pid 2>/dev/null
+"""
+
+# ============================================================================
+# DATABASE TASKS
+# ============================================================================
+
+[tasks."db:migrate"]
+description = "Run Prisma migrations"
+dir = "staffEvaluation-api"
+run = "npx prisma migrate deploy"
+
+[tasks."db:seed"]
+description = "Seed the database with sample data"
+dir = "staffEvaluation-api"
+run = "npx prisma db seed"
+
+[tasks."db:studio"]
+description = "Open Prisma Studio"
+dir = "staffEvaluation-api"
+run = "npx prisma studio"
+
+[tasks."db:generate"]
+description = "Generate Prisma client"
+dir = "staffEvaluation-api"
+run = "npx prisma generate"
+
+[tasks."db:reset"]
+description = "Reset database and seed"
+dir = "staffEvaluation-api"
+run = "pnpm db:reset"
+
+# ============================================================================
+# TEST TASKS
+# ============================================================================
+
+[tasks.test]
+description = "Run all tests"
+depends = ["test:api"]
+
+[tasks."test:api"]
+description = "Run API tests"
+dir = "staffEvaluation-api"
+run = "pnpm test"
+
+[tasks."test:cov"]
+description = "Run API tests with coverage"
+dir = "staffEvaluation-api"
+run = "pnpm test:cov"
+
+# ============================================================================
+# INSTALL TASKS
+# ============================================================================
+
+[tasks.install]
+description = "Install dependencies for all projects"
+depends = ["install:api", "install:hub"]
+
+[tasks."install:api"]
+description = "Install API dependencies"
+dir = "staffEvaluation-api"
+run = "pnpm install"
+
+[tasks."install:hub"]
+description = "Install Hub dependencies"
+dir = "staffEvaluation-hub"
+run = "pnpm install"
+
+# ============================================================================
+# UTILITY TASKS
+# ============================================================================
+
+[tasks.lint]
+description = "Lint all projects"
+depends = ["lint:api", "lint:hub"]
+
+[tasks."lint:api"]
+description = "Lint API code"
+dir = "staffEvaluation-api"
+run = "pnpm lint"
+
+[tasks."lint:hub"]
+description = "Lint Hub code"
+dir = "staffEvaluation-hub"
+run = "pnpm lint"
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = """
+#!/bin/bash
+echo "Cleaning build artifacts..."
+rm -rf staffEvaluation-api/dist
+rm -rf staffEvaluation-hub/dist
+echo "Clean complete."
+"""
+
+[tasks.status]
+description = "Show status of running servers"
+run = """
+#!/bin/bash
+echo "=== Server Status ==="
+echo ""
+echo "API Server (port 3001):"
+if lsof -i:3001 2>/dev/null | grep -q LISTEN; then
+  echo "  Status: RUNNING"
+else
+  echo "  Status: STOPPED"
+fi
+echo ""
+echo "Hub Server (port 8080):"
+if lsof -i:8080 2>/dev/null | grep -q LISTEN; then
+  echo "  Status: RUNNING"
+else
+  echo "  Status: STOPPED"
+fi
+echo ""
+echo "Database (port 5432):"
+if lsof -i:5432 2>/dev/null | grep -q LISTEN; then
+  echo "  Status: RUNNING"
+else
+  echo "  Status: STOPPED"
+fi
+"""
+
+# ============================================================================
+# DOCKER TASKS
+# ============================================================================
+
+[tasks."docker:up"]
+description = "Start all services with Docker Compose"
+run = "docker compose up -d"
+
+[tasks."docker:down"]
+description = "Stop all Docker Compose services"
+run = "docker compose down"
+
+[tasks."docker:build"]
+description = "Build Docker images"
+run = "docker compose build"
+
+[tasks."docker:logs"]
+description = "View Docker Compose logs"
+run = "docker compose logs -f"

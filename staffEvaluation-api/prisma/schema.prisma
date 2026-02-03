@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  profile      Profile?
+  roles        UserRole[]
+
+  @@map("users")
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  staffId   Int?     @unique @map("staff_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  staff     Staff?   @relation(fields: [staffId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  role      AppRole
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role])
+  @@map("user_roles")
+}
+
+model OrganizationUnit {
+  id     Int     @id @default(autoincrement())
+  name   String
+  groups Group[]
+  staff  Staff[]
+
+  @@map("organizationunits")
+}
+
+model Staff {
+  id                  Int               @id @default(autoincrement())
+  name                String?
+  emailh              String?
+  emails              String?
+  staffcode           String?
+  sex                 Int?
+  birthday            String?
+  mobile              String?
+  academicrank        String?
+  academicdegree      String?
+  organizationunitid  Int?              @map("organizationunitid")
+  bidv                String?
+  evaluationsGiven    Evaluation[]      @relation("reviewer")
+  evaluationsReceived Evaluation[]      @relation("victim")
+  profile             Profile?
+  organizationUnit    OrganizationUnit? @relation(fields: [organizationunitid], references: [id])
+  staffGroups         Staff2Group[]
+
+  @@index([organizationunitid])
+  @@index([staffcode])
+  @@map("staff")
+}
+
+model Group {
+  id                 Int               @id @default(autoincrement())
+  name               String
+  organizationunitid Int?              @map("organizationunitid")
+  evaluations        Evaluation[]
+  organizationUnit   OrganizationUnit? @relation(fields: [organizationunitid], references: [id])
+  staffGroups        Staff2Group[]
+  subjects           Subject[]
+
+  @@index([organizationunitid])
+  @@map("groups")
+}
+
+model Staff2Group {
+  id      Int   @id @default(autoincrement())
+  staffid Int
+  groupid Int
+  group   Group @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  staff   Staff @relation(fields: [staffid], references: [id], onDelete: Cascade)
+
+  @@unique([staffid, groupid])
+  @@index([staffid])
+  @@index([groupid])
+  @@map("staff2groups")
+}
+
+model Question {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String?
+  evaluations Evaluation[]
+
+  @@map("questions")
+}
+
+model Subject {
+  id        Int     @id @default(autoincrement())
+  subjectid String?
+  name      String?
+  groupid   Int?
+  group     Group?  @relation(fields: [groupid], references: [id])
+
+  @@map("subjects")
+}
+
+model Evaluation {
+  id           Int       @id @default(autoincrement())
+  reviewerid   Int?
+  victimid     Int?
+  groupid      Int?
+  modifieddate DateTime? @map("modifieddate")
+  point        Float?
+  questionid   Int?
+  group        Group?    @relation(fields: [groupid], references: [id])
+  question     Question? @relation(fields: [questionid], references: [id])
+  reviewer     Staff?    @relation("reviewer", fields: [reviewerid], references: [id])
+  victim       Staff?    @relation("victim", fields: [victimid], references: [id])
+
+  @@unique([reviewerid, victimid, groupid, questionid], name: "reviewerid_victimid_groupid_questionid")
+  @@index([reviewerid])
+  @@index([victimid])
+  @@index([groupid])
+  @@index([questionid])
+  @@map("evaluations")
+}
+
+enum AppRole {
+  admin
+  moderator
+  user
+}
