@@ -160,7 +160,6 @@ flowchart TB
 
 ## 3. Use Cases
 
-### 3.1 Actors
 
 | Actor | Description |
 |-------|-------------|
@@ -168,52 +167,6 @@ flowchart TB
 | **User** | Authenticated staff member, can evaluate peers |
 | **Moderator** | Can view reports for their groups |
 | **Admin** | Full system access, manages all entities |
-
-### 3.2 Use Case Diagram
-
-```mermaid
-flowchart LR
-    subgraph System["Staff Evaluation System"]
-        UC1["Login / Register"]
-        UC2["View Dashboard"]
-        UC3["View My Groups"]
-        UC4["Select Colleague to Evaluate"]
-        UC5["Submit Evaluation (0-4 scale)"]
-        UC6["View My Evaluation History"]
-        UC7["Update Profile"]
-        UC8["View Group Reports"]
-        UC9["Export Evaluation Results"]
-        UC10["Manage Staff (CRUD)"]
-        UC11["Manage Groups (CRUD)"]
-        UC12["Assign Staff to Groups"]
-        UC13["Manage Questions (CRUD)"]
-        UC14["Manage Organization Units"]
-        UC15["Manage User Roles"]
-        UC16["View Analytics & Charts"]
-    end
-
-    Guest((Guest)) --> UC1
-
-    User((User)) --> UC2
-    User --> UC3
-    User --> UC4
-    User --> UC5
-    User --> UC6
-    User --> UC7
-
-    Moderator((Moderator)) -.->|includes| User
-    Moderator --> UC8
-    Moderator --> UC9
-
-    Admin((Admin)) -.->|includes| Moderator
-    Admin --> UC10
-    Admin --> UC11
-    Admin --> UC12
-    Admin --> UC13
-    Admin --> UC14
-    Admin --> UC15
-    Admin --> UC16
-```
 
 ### 3.3 Use Case Details
 
