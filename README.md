@@ -1,7 +1,3 @@
-# Staff Evaluation Hub
-
-A comprehensive staff evaluation and peer review system built with React, NestJS, and PostgreSQL.
-
 # Staff Evaluation System - System Design Document
 
 ## Table of Contents
@@ -44,111 +40,120 @@ A comprehensive staff evaluation and peer review system built with React, NestJS
 
 ### 2.1 High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                           CLIENTS                                    │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │   Browser   │  │   Mobile    │  │   Admin     │                 │
-│  │   (React)   │  │   (Future)  │  │   Portal    │                 │
-│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘                 │
-└─────────┼────────────────┼────────────────┼─────────────────────────┘
-          │                │                │
-          └────────────────┼────────────────┘
-                           │ HTTPS
-                           ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                        API GATEWAY                                   │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                      NestJS Backend                          │   │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐       │   │
-│  │  │   Auth   │ │  Staff   │ │  Groups  │ │Evaluations│       │   │
-│  │  │  Module  │ │  Module  │ │  Module  │ │  Module  │       │   │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘       │   │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐                    │   │
-│  │  │Questions │ │  Reports │ │  Users   │                    │   │
-│  │  │  Module  │ │  Module  │ │  Module  │                    │   │
-│  │  └──────────┘ └──────────┘ └──────────┘                    │   │
-│  └─────────────────────────┬───────────────────────────────────┘   │
-└─────────────────────────────┼───────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                        DATA LAYER                                    │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    Prisma ORM                                │   │
-│  └─────────────────────────┬───────────────────────────────────┘   │
-│                            │                                        │
-│  ┌─────────────────────────▼───────────────────────────────────┐   │
-│  │                   PostgreSQL 16                              │   │
-│  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐    │   │
-│  │  │ staff  │ │ groups │ │questions│ │evalua- │ │profiles│    │   │
-│  │  │        │ │        │ │        │ │ tions  │ │        │    │   │
-│  │  └────────┘ └────────┘ └────────┘ └────────┘ └────────┘    │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph CLIENTS["CLIENTS"]
+        Browser["Browser<br/>(React)"]
+        Mobile["Mobile<br/>(Future)"]
+        AdminPortal["Admin<br/>Portal"]
+    end
+    
+    Browser & Mobile & AdminPortal -->|HTTPS| API_GATEWAY
+    
+    subgraph API_GATEWAY["API GATEWAY"]
+        subgraph NestJS["NestJS Backend"]
+            Auth["Auth<br/>Module"]
+            Staff["Staff<br/>Module"]
+            Groups["Groups<br/>Module"]
+            Evaluations["Evaluations<br/>Module"]
+            Questions["Questions<br/>Module"]
+            Reports["Reports<br/>Module"]
+            Users["Users<br/>Module"]
+        end
+    end
+    
+    NestJS --> DATA_LAYER
+    
+    subgraph DATA_LAYER["DATA LAYER"]
+        Prisma["Prisma ORM"]
+        subgraph PostgreSQL["PostgreSQL 16"]
+            staff_db[(staff)]
+            groups_db[(groups)]
+            questions_db[(questions)]
+            evaluations_db[(evaluations)]
+            profiles_db[(profiles)]
+        end
+        Prisma --> PostgreSQL
+    end
 ```
 
 ### 2.2 Component Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     FRONTEND (React)                             │
-├─────────────────────────────────────────────────────────────────┤
-│  Pages                    │  Components                         │
-│  ├── Auth                 │  ├── AppSidebar                    │
-│  ├── Dashboard            │  ├── MainLayout                    │
-│  ├── Assessment           │  ├── ProtectedRoute                │
-│  ├── Profile              │  └── ui/ (shadcn)                  │
-│  └── Admin/               │                                     │
-│      ├── Staff            │  Hooks                              │
-│      ├── Groups           │  ├── useAuth                       │
-│      ├── Questions        │  ├── useStaff                      │
-│      ├── Results          │  └── useToast                      │
-│      ├── Charts           │                                     │
-│      └── Roles            │  State: TanStack Query              │
-├─────────────────────────────────────────────────────────────────┤
-│                        API Client (Axios)                        │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     BACKEND (NestJS)                             │
-├─────────────────────────────────────────────────────────────────┤
-│  Controllers              │  Services                           │
-│  ├── AuthController       │  ├── AuthService                   │
-│  ├── StaffController      │  ├── StaffService                  │
-│  ├── GroupsController     │  ├── GroupsService                 │
-│  ├── QuestionsController  │  ├── QuestionsService              │
-│  ├── EvaluationsController│  ├── EvaluationsService            │
-│  └── ReportsController    │  └── ReportsService                │
-├─────────────────────────────────────────────────────────────────┤
-│  Guards                   │  Decorators                         │
-│  ├── JwtAuthGuard         │  ├── @CurrentUser                  │
-│  └── RolesGuard           │  └── @Roles                        │
-├─────────────────────────────────────────────────────────────────┤
-│                     Prisma Service                               │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph FRONTEND["FRONTEND (React)"]
+        subgraph Pages
+            AuthPage["Auth"]
+            Dashboard["Dashboard"]
+            Assessment["Assessment"]
+            Profile["Profile"]
+            subgraph Admin
+                AdminStaff["Staff"]
+                AdminGroups["Groups"]
+                AdminQuestions["Questions"]
+                AdminResults["Results"]
+                AdminCharts["Charts"]
+                AdminRoles["Roles"]
+            end
+        end
+        subgraph Components
+            AppSidebar["AppSidebar"]
+            MainLayout["MainLayout"]
+            ProtectedRoute["ProtectedRoute"]
+            UI["ui/ (shadcn)"]
+        end
+        subgraph Hooks
+            useAuth["useAuth"]
+            useStaff["useStaff"]
+            useToast["useToast"]
+        end
+        State["State: TanStack Query"]
+        APIClient["API Client (Axios)"]
+    end
+    
+    APIClient --> BACKEND
+    
+    subgraph BACKEND["BACKEND (NestJS)"]
+        subgraph Controllers
+            AuthController["AuthController"]
+            StaffController["StaffController"]
+            GroupsController["GroupsController"]
+            QuestionsController["QuestionsController"]
+            EvaluationsController["EvaluationsController"]
+            ReportsController["ReportsController"]
+        end
+        subgraph Services
+            AuthService["AuthService"]
+            StaffService["StaffService"]
+            GroupsService["GroupsService"]
+            QuestionsService["QuestionsService"]
+            EvaluationsService["EvaluationsService"]
+            ReportsService["ReportsService"]
+        end
+        subgraph Guards
+            JwtAuthGuard["JwtAuthGuard"]
+            RolesGuard["RolesGuard"]
+        end
+        subgraph Decorators
+            CurrentUser["@CurrentUser"]
+            Roles["@Roles"]
+        end
+        PrismaService["Prisma Service"]
+    end
 ```
 
 ### 2.3 Deployment Architecture (Local Development)
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Docker Compose                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────────┐         ┌─────────────────┐               │
-│  │    Frontend     │         │    Backend      │               │
-│  │    (Vite)       │◄───────►│   (NestJS)      │               │
-│  │   Port: 5173    │         │   Port: 3001    │               │
-│  └─────────────────┘         └────────┬────────┘               │
-│                                       │                         │
-│                              ┌────────▼────────┐               │
-│                              │   PostgreSQL    │               │
-│                              │   Port: 5432    │               │
-│                              └─────────────────┘               │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph DockerCompose["Docker Compose"]
+        Frontend["Frontend<br/>(Vite)<br/>Port: 5173"]
+        Backend["Backend<br/>(NestJS)<br/>Port: 3001"]
+        PostgreSQL[("PostgreSQL<br/>Port: 5432")]
+        
+        Frontend <--> Backend
+        Backend --> PostgreSQL
+    end
 ```
 
 ---
@@ -166,41 +171,48 @@ A comprehensive staff evaluation and peer review system built with React, NestJS
 
 ### 3.2 Use Case Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        Staff Evaluation System                       │
-│                                                                      │
-│  ┌─────────┐                                                        │
-│  │  Guest  │───────► Login / Register                               │
-│  └─────────┘                                                        │
-│                                                                      │
-│  ┌─────────┐                                                        │
-│  │  User   │───┬───► View Dashboard                                 │
-│  └─────────┘   │                                                    │
-│                ├───► View My Groups                                 │
-│                ├───► Select Colleague to Evaluate                   │
-│                ├───► Submit Evaluation (0-4 scale)                  │
-│                ├───► View My Evaluation History                     │
-│                └───► Update Profile                                 │
-│                                                                      │
-│  ┌──────────┐                                                       │
-│  │Moderator │───┬───► All User Use Cases                           │
-│  └──────────┘   │                                                   │
-│                 ├───► View Group Reports                            │
-│                 └───► Export Evaluation Results                     │
-│                                                                      │
-│  ┌─────────┐                                                        │
-│  │  Admin  │───┬───► All Moderator Use Cases                       │
-│  └─────────┘   │                                                    │
-│                ├───► Manage Staff (CRUD)                            │
-│                ├───► Manage Groups (CRUD)                           │
-│                ├───► Assign Staff to Groups                         │
-│                ├───► Manage Questions (CRUD)                        │
-│                ├───► Manage Organization Units                      │
-│                ├───► Manage User Roles                              │
-│                └───► View Analytics & Charts                        │
-│                                                                      │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph System["Staff Evaluation System"]
+        UC1["Login / Register"]
+        UC2["View Dashboard"]
+        UC3["View My Groups"]
+        UC4["Select Colleague to Evaluate"]
+        UC5["Submit Evaluation (0-4 scale)"]
+        UC6["View My Evaluation History"]
+        UC7["Update Profile"]
+        UC8["View Group Reports"]
+        UC9["Export Evaluation Results"]
+        UC10["Manage Staff (CRUD)"]
+        UC11["Manage Groups (CRUD)"]
+        UC12["Assign Staff to Groups"]
+        UC13["Manage Questions (CRUD)"]
+        UC14["Manage Organization Units"]
+        UC15["Manage User Roles"]
+        UC16["View Analytics & Charts"]
+    end
+
+    Guest((Guest)) --> UC1
+
+    User((User)) --> UC2
+    User --> UC3
+    User --> UC4
+    User --> UC5
+    User --> UC6
+    User --> UC7
+
+    Moderator((Moderator)) -.->|includes| User
+    Moderator --> UC8
+    Moderator --> UC9
+
+    Admin((Admin)) -.->|includes| Moderator
+    Admin --> UC10
+    Admin --> UC11
+    Admin --> UC12
+    Admin --> UC13
+    Admin --> UC14
+    Admin --> UC15
+    Admin --> UC16
 ```
 
 ### 3.3 Use Case Details
@@ -249,172 +261,90 @@ A comprehensive staff evaluation and peer review system built with React, NestJS
 
 ### 4.1 Authentication Flow
 
-```
-┌────────┐          ┌────────┐          ┌────────┐          ┌────────┐
-│ Client │          │ NestJS │          │ Prisma │          │PostgreSQL│
-└───┬────┘          └───┬────┘          └───┬────┘          └───┬────┘
-    │                   │                   │                   │
-    │  POST /auth/login │                   │                   │
-    │  {email, password}│                   │                   │
-    │──────────────────►│                   │                   │
-    │                   │  findUnique(email)│                   │
-    │                   │──────────────────►│                   │
-    │                   │                   │   SELECT profile  │
-    │                   │                   │──────────────────►│
-    │                   │                   │◄──────────────────│
-    │                   │◄──────────────────│   profile + roles │
-    │                   │                   │                   │
-    │                   │ Verify password   │                   │
-    │                   │ (Argon2id)        │                   │
-    │                   │                   │                   │
-    │                   │ Generate tokens   │                   │
-    │                   │ (JWT)             │                   │
-    │                   │                   │                   │
-    │ {accessToken,     │                   │                   │
-    │  refreshToken,    │                   │                   │
-    │  user}            │                   │                   │
-    │◄──────────────────│                   │                   │
-    │                   │                   │                   │
-    │  Store tokens     │                   │                   │
-    │  (localStorage)   │                   │                   │
-    │                   │                   │                   │
+```mermaid
+sequenceDiagram
+    participant Client
+    participant NestJS
+    participant Prisma
+    participant PostgreSQL
+    
+    Client->>NestJS: POST /auth/login<br/>{email, password}
+    NestJS->>Prisma: findUnique(email)
+    Prisma->>PostgreSQL: SELECT profile
+    PostgreSQL-->>Prisma: profile data
+    Prisma-->>NestJS: profile + roles
+    Note over NestJS: Verify password<br/>(Argon2id)
+    Note over NestJS: Generate tokens<br/>(JWT)
+    NestJS-->>Client: {accessToken,<br/>refreshToken,<br/>user}
+    Note over Client: Store tokens<br/>(localStorage)
 ```
 
 ### 4.2 Peer Evaluation Flow
 
-```
-┌────────┐          ┌────────┐          ┌────────┐          ┌────────┐
-│ Client │          │ NestJS │          │ Prisma │          │PostgreSQL│
-└───┬────┘          └───┬────┘          └───┬────┘          └───┬────┘
-    │                   │                   │                   │
-    │ GET /groups/my    │                   │                   │
-    │ (with JWT)        │                   │                   │
-    │──────────────────►│                   │                   │
-    │                   │  Validate JWT     │                   │
-    │                   │  Extract staffId  │                   │
-    │                   │                   │                   │
-    │                   │  Find user groups │                   │
-    │                   │──────────────────►│                   │
-    │                   │◄──────────────────│                   │
-    │  [groups]         │                   │                   │
-    │◄──────────────────│                   │                   │
-    │                   │                   │                   │
-    │ User selects      │                   │                   │
-    │ group & colleague │                   │                   │
-    │                   │                   │                   │
-    │ GET /questions    │                   │                   │
-    │──────────────────►│                   │                   │
-    │  [questions]      │                   │                   │
-    │◄──────────────────│                   │                   │
-    │                   │                   │                   │
-    │ GET /evaluations/ │                   │                   │
-    │ my?groupId=X      │                   │                   │
-    │──────────────────►│                   │                   │
-    │  [existing evals] │                   │                   │
-    │◄──────────────────│                   │                   │
-    │                   │                   │                   │
-    │ User fills scores │                   │                   │
-    │ for each question │                   │                   │
-    │                   │                   │                   │
-    │ POST /evaluations │                   │                   │
-    │ /bulk             │                   │                   │
-    │ {groupId,         │                   │                   │
-    │  evaluations:[]}  │                   │                   │
-    │──────────────────►│                   │                   │
-    │                   │ Validate:         │                   │
-    │                   │ - Not self-eval   │                   │
-    │                   │ - Same group      │                   │
-    │                   │ - Valid points    │                   │
-    │                   │                   │                   │
-    │                   │ Upsert evaluations│                   │
-    │                   │──────────────────►│                   │
-    │                   │◄──────────────────│                   │
-    │  {success: true}  │                   │                   │
-    │◄──────────────────│                   │                   │
-    │                   │                   │                   │
+```mermaid
+sequenceDiagram
+    participant Client
+    participant NestJS
+    participant Prisma
+    participant PostgreSQL
+    
+    Client->>NestJS: GET /groups/my (with JWT)
+    Note over NestJS: Validate JWT<br/>Extract staffId
+    NestJS->>Prisma: Find user groups
+    Prisma-->>NestJS: groups data
+    NestJS-->>Client: [groups]
+    
+    Note over Client: User selects<br/>group & colleague
+    
+    Client->>NestJS: GET /questions
+    NestJS-->>Client: [questions]
+    
+    Client->>NestJS: GET /evaluations/my?groupId=X
+    NestJS-->>Client: [existing evals]
+    
+    Note over Client: User fills scores<br/>for each question
+    
+    Client->>NestJS: POST /evaluations/bulk<br/>{groupId, evaluations:[]}
+    Note over NestJS: Validate:<br/>- Not self-eval<br/>- Same group<br/>- Valid points
+    NestJS->>Prisma: Upsert evaluations
+    Prisma-->>NestJS: success
+    NestJS-->>Client: {success: true}
 ```
 
 ### 4.3 Report Generation Flow
 
-```
-┌────────┐          ┌────────┐          ┌────────┐
-│ Admin  │          │ NestJS │          │PostgreSQL│
-└───┬────┘          └───┬────┘          └───┬────┘
-    │                   │                   │
-    │ GET /reports/     │                   │
-    │ group/:groupId    │                   │
-    │──────────────────►│                   │
-    │                   │ Check role        │
-    │                   │ (admin/moderator) │
-    │                   │                   │
-    │                   │ Fetch group +     │
-    │                   │ members +         │
-    │                   │ evaluations       │
-    │                   │──────────────────►│
-    │                   │◄──────────────────│
-    │                   │                   │
-    │                   │ Calculate:        │
-    │                   │ - Avg per staff   │
-    │                   │ - Avg per question│
-    │                   │ - Rankings        │
-    │                   │                   │
-    │ {                 │                   │
-    │   groupId,        │                   │
-    │   groupName,      │                   │
-    │   staffScores:[   │                   │
-    │     {staffId,     │                   │
-    │      name,        │                   │
-    │      avgScore,    │                   │
-    │      byQuestion}  │                   │
-    │   ],              │                   │
-    │   questionAvgs    │                   │
-    │ }                 │                   │
-    │◄──────────────────│                   │
-    │                   │                   │
+```mermaid
+sequenceDiagram
+    participant Admin
+    participant NestJS
+    participant PostgreSQL
+    
+    Admin->>NestJS: GET /reports/group/:groupId
+    Note over NestJS: Check role<br/>(admin/moderator)
+    NestJS->>PostgreSQL: Fetch group +<br/>members +<br/>evaluations
+    PostgreSQL-->>NestJS: data
+    Note over NestJS: Calculate:<br/>- Avg per staff<br/>- Avg per question<br/>- Rankings
+    NestJS-->>Admin: {groupId, groupName,<br/>staffScores:[{staffId,<br/>name, avgScore,<br/>byQuestion}],<br/>questionAvgs}
 ```
 
 ### 4.4 User Journey Flow
 
-```
-                                    ┌──────────────┐
-                                    │    Login     │
-                                    └──────┬───────┘
-                                           │
-                                           ▼
-                              ┌────────────────────────┐
-                              │      Dashboard         │
-                              │  (Overview + Stats)    │
-                              └────────────┬───────────┘
-                                           │
-                    ┌──────────────────────┼──────────────────────┐
-                    │                      │                      │
-                    ▼                      ▼                      ▼
-           ┌────────────────┐    ┌────────────────┐    ┌────────────────┐
-           │   Assessment   │    │    Profile     │    │  Admin Panel   │
-           │   (Evaluate)   │    │   (View/Edit)  │    │  (Admin only)  │
-           └───────┬────────┘    └────────────────┘    └───────┬────────┘
-                   │                                           │
-                   ▼                                           │
-        ┌──────────────────┐                    ┌──────────────┴──────────────┐
-        │  Select Group    │                    │                             │
-        └────────┬─────────┘                    │                             │
-                 │                              ▼                             ▼
-                 ▼                    ┌─────────────────┐          ┌─────────────────┐
-        ┌──────────────────┐          │  Manage Staff   │          │  Manage Groups  │
-        │ Select Colleague │          │  - Create       │          │  - Create       │
-        └────────┬─────────┘          │  - Edit         │          │  - Members      │
-                 │                    │  - Delete       │          │  - Delete       │
-                 ▼                    │  - Assign       │          └─────────────────┘
-        ┌──────────────────┐          └─────────────────┘
-        │ Rate Questions   │                    │
-        │ (0-4 scale)      │                    ▼
-        └────────┬─────────┘          ┌─────────────────┐
-                 │                    │ View Reports    │
-                 ▼                    │ - Group Report  │
-        ┌──────────────────┐          │ - Staff Report  │
-        │ Submit & Confirm │          │ - Charts        │
-        └──────────────────┘          │ - Export        │
-                                      └─────────────────┘
+```mermaid
+flowchart TB
+    Login["Login"] --> Dashboard["Dashboard<br/>(Overview + Stats)"]
+    
+    Dashboard --> Assessment["Assessment<br/>(Evaluate)"]
+    Dashboard --> Profile["Profile<br/>(View/Edit)"]
+    Dashboard --> AdminPanel["Admin Panel<br/>(Admin only)"]
+    
+    Assessment --> SelectGroup["Select Group"]
+    SelectGroup --> SelectColleague["Select Colleague"]
+    SelectColleague --> RateQuestions["Rate Questions<br/>(0-4 scale)"]
+    RateQuestions --> Submit["Submit & Confirm"]
+    
+    AdminPanel --> ManageStaff["Manage Staff<br/>- Create<br/>- Edit<br/>- Delete<br/>- Assign"]
+    AdminPanel --> ManageGroups["Manage Groups<br/>- Create<br/>- Members<br/>- Delete"]
+    ManageStaff --> ViewReports["View Reports<br/>- Group Report<br/>- Staff Report<br/>- Charts<br/>- Export"]
 ```
 
 ---
@@ -423,86 +353,96 @@ A comprehensive staff evaluation and peer review system built with React, NestJS
 
 ### 5.1 Entity Relationship Diagram (ERD)
 
-```
-┌─────────────────────┐       ┌─────────────────────┐
-│  organizationunits  │       │       profiles      │
-├─────────────────────┤       ├─────────────────────┤
-│ PK id (SERIAL)      │       │ PK id (UUID)        │
-│    name (VARCHAR)   │       │    email (UNIQUE)   │
-└──────────┬──────────┘       │    password_hash    │
-           │                  │    email_confirmed  │
-           │ 1                │ FK staff_id (UNIQUE)│◄─────┐
-           │                  │    created_at       │      │
-           │                  │    updated_at       │      │
-           ▼ *                └──────────┬──────────┘      │
-┌─────────────────────┐                  │                 │
-│       staff         │                  │ 1               │
-├─────────────────────┤                  │                 │
-│ PK id (SERIAL)      │◄─────────────────┘                 │
-│    staffcode        │                                    │
-│    name             │                                    │
-│    birthday         │                                    │
-│    sex              │                                    │
-│    mobile           │                                    │
-│    emailh           │                                    │
-│    emails           │                                    │
-│    academicdegree   │                                    │
-│    academicrank     │                                    │
-│    bidv             │                                    │
-│ FK organizationunitid│                                   │
-└──────────┬──────────┘                                    │
-           │                                               │
-           │ 1              ┌─────────────────────┐        │
-           │                │     user_roles      │        │
-           │                ├─────────────────────┤        │
-           │                │ PK id (UUID)        │        │
-           │                │ FK user_id          │────────┤
-           │                │    role (ENUM)      │        │
-           │                │    created_at       │        │
-           │                └─────────────────────┘        │
-           │                                               │
-           │ *                                             │
-           ▼                                               │
-┌─────────────────────┐                                    │
-│    staff2groups     │                                    │
-├─────────────────────┤                                    │
-│ PK id (SERIAL)      │                                    │
-│ FK staffid          │────────────────────────────────────┘
-│ FK groupid          │───────────┐
-│    UNIQUE(staffid,  │           │
-│           groupid)  │           │
-└─────────────────────┘           │
-                                  │ *
-                                  ▼
-┌─────────────────────┐       ┌─────────────────────┐
-│       groups        │       │      subjects       │
-├─────────────────────┤       ├─────────────────────┤
-│ PK id (SERIAL)      │◄──────│ FK groupid          │
-│    name             │   1 * │ PK id (SERIAL)      │
-│ FK organizationunitid       │    subjectid        │
-└──────────┬──────────┘       │    name             │
-           │                  └─────────────────────┘
-           │ 1
-           │
-           ▼ *
-┌─────────────────────┐       ┌─────────────────────┐
-│    evaluations      │       │     questions       │
-├─────────────────────┤       ├─────────────────────┤
-│ PK id (SERIAL)      │       │ PK id (SERIAL)      │
-│ FK reviewerid       │───┐   │    title            │
-│ FK victimid         │───┤   │    description      │
-│ FK questionid       │───┼───│◄────────────────────│
-│ FK groupid          │───┤   └─────────────────────┘
-│    point (0-4)      │   │
-│    modifieddate     │   │
-│    UNIQUE(reviewer, │   │
-│      victim,question│   │
-│      group)         │   │
-└─────────────────────┘   │
-           │              │
-           │ *            │
-           └──────────────┘
-             (to staff)
+```mermaid
+erDiagram
+    organizationunits ||--o{ staff : "has"
+    organizationunits ||--o{ groups : "contains"
+    
+    organizationunits {
+        SERIAL id PK
+        VARCHAR name
+    }
+    
+    profiles ||--|| staff : "links to"
+    profiles ||--o{ user_roles : "has"
+    
+    profiles {
+        UUID id PK
+        VARCHAR email UK
+        VARCHAR password_hash
+        BOOLEAN email_confirmed
+        INT staff_id FK UK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    staff ||--o{ staff2groups : "belongs to"
+    staff ||--o{ evaluations : "reviews (as reviewer)"
+    staff ||--o{ evaluations : "receives (as victim)"
+    
+    staff {
+        SERIAL id PK
+        VARCHAR staffcode UK
+        VARCHAR name
+        DATE birthday
+        INT sex
+        VARCHAR mobile
+        VARCHAR emailh
+        VARCHAR emails
+        VARCHAR academicdegree
+        VARCHAR academicrank
+        VARCHAR bidv
+        INT organizationunitid FK
+    }
+    
+    user_roles {
+        UUID id PK
+        UUID user_id FK
+        ENUM role
+        TIMESTAMP created_at
+    }
+    
+    staff2groups }o--|| groups : "member of"
+    
+    staff2groups {
+        SERIAL id PK
+        INT staffid FK
+        INT groupid FK
+    }
+    
+    groups ||--o{ subjects : "has"
+    groups ||--o{ evaluations : "context for"
+    
+    groups {
+        SERIAL id PK
+        VARCHAR name
+        INT organizationunitid FK
+    }
+    
+    subjects {
+        SERIAL id PK
+        VARCHAR subjectid
+        VARCHAR name
+        INT groupid FK
+    }
+    
+    questions ||--o{ evaluations : "criterion for"
+    
+    questions {
+        SERIAL id PK
+        VARCHAR title
+        VARCHAR description
+    }
+    
+    evaluations {
+        SERIAL id PK
+        INT reviewerid FK
+        INT victimid FK
+        INT questionid FK
+        INT groupid FK
+        DOUBLE point
+        TIMESTAMP modifieddate
+    }
 ```
 
 ### 5.2 Table Definitions
