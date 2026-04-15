@@ -65,13 +65,26 @@ export class EvaluationsService {
     return { data: results, total, truncated };
   }
 
-  async findByReviewer(staffId: number, groupId?: number, periodId?: number) {
-    const where: Prisma.EvaluationWhereInput = { reviewerid: staffId };
+  /**
+   * Build a where clause scoped to a single staff role (reviewer OR evaluatee).
+   * Shared by findByReviewer, findByEvaluatee, findByEvaluateeClosedPeriods
+   * so filter semantics stay consistent across queries.
+   */
+  private buildEvalWhere(
+    role: 'reviewerid' | 'evaluateeid',
+    staffId: number,
+    groupId?: number,
+    periodId?: number,
+  ): Prisma.EvaluationWhereInput {
+    const where: Prisma.EvaluationWhereInput = { [role]: staffId };
     if (groupId) where.groupid = groupId;
     if (periodId) where.periodid = periodId;
+    return where;
+  }
 
+  async findByReviewer(staffId: number, groupId?: number, periodId?: number) {
     return this.prisma.evaluation.findMany({
-      where,
+      where: this.buildEvalWhere('reviewerid', staffId, groupId, periodId),
       include: {
         evaluatee: true,
         question: true,
@@ -81,12 +94,8 @@ export class EvaluationsService {
   }
 
   async findByEvaluatee(staffId: number, groupId?: number, periodId?: number) {
-    const where: Prisma.EvaluationWhereInput = { evaluateeid: staffId };
-    if (groupId) where.groupid = groupId;
-    if (periodId) where.periodid = periodId;
-
     return this.prisma.evaluation.findMany({
-      where,
+      where: this.buildEvalWhere('evaluateeid', staffId, groupId, periodId),
       include: {
         reviewer: { select: { id: true, name: true, avatar: true } },
         question: true,
@@ -98,10 +107,9 @@ export class EvaluationsService {
 
   async findByEvaluateeClosedPeriods(staffId: number, periodId?: number) {
     const where: Prisma.EvaluationWhereInput = {
-      evaluateeid: staffId,
+      ...this.buildEvalWhere('evaluateeid', staffId, undefined, periodId),
       period: { status: 'closed' },
     };
-    if (periodId) where.periodid = periodId;
 
     return this.prisma.evaluation.findMany({
       where,

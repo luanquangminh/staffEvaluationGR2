@@ -34,7 +34,8 @@ export default function AdminCharts() {
     }
   }, [periods, selectedPeriodId]);
 
-  const { data: evaluations, isLoading: loadingEval } = useAllEvaluations(selectedPeriodId);
+  const { data: evaluationsPage, isLoading: loadingEval } = useAllEvaluations(selectedPeriodId);
+  const evaluations = evaluationsPage?.data;
 
   const isLoading = loadingPeriods || loadingGroups || loadingStaff;
 

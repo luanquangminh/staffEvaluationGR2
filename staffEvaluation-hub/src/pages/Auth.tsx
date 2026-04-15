@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { API_URL } from '@/lib/api';
+import { API_URL, ApiError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,6 +35,11 @@ export default function Auth() {
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // FE-5: per-field errors rendered inline. Keyed by field name ('email' |
+  // 'password') — either set locally by the zod validator, or populated
+  // from an ApiError.fields payload returned by the backend.
+  const [signInErrors, setSignInErrors] = useState<Record<string, string>>({});
+  const [signUpErrors, setSignUpErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (user) {
@@ -42,19 +47,48 @@ export default function Auth() {
     }
   }, [user, navigate]);
 
-  const validateForm = (email: string, password: string, isRegister: boolean): boolean => {
+  const validateForm = (
+    email: string,
+    password: string,
+    isRegister: boolean,
+  ): Record<string, string> | null => {
     const schema = isRegister ? registerSchema : loginSchema;
     const result = schema.safeParse({ email, password });
-    if (!result.success) {
-      toast.error(result.error.errors[0].message);
-      return false;
+    if (result.success) return null;
+    const errors: Record<string, string> = {};
+    for (const issue of result.error.errors) {
+      const key = String(issue.path[0] ?? 'form');
+      if (!errors[key]) errors[key] = issue.message;
     }
-    return true;
+    return errors;
+  };
+
+  // FE-5: turn an ApiError from sign-in/sign-up into field-level errors.
+  // Server emits `fields: { email: [...], password: [...] }`; if missing,
+  // fall back to mapping the top-level message onto the likeliest field.
+  const toFieldErrors = (
+    err: Error,
+    fallbackMessage: string,
+  ): { fields: Record<string, string>; topLevel?: string } => {
+    if (err instanceof ApiError && err.hasFieldErrors()) {
+      const fields: Record<string, string> = {};
+      for (const [path, msgs] of Object.entries(err.fields)) {
+        const key = path.split('.')[0];
+        if (!fields[key] && msgs[0]) fields[key] = msgs[0];
+      }
+      return { fields };
+    }
+    return { fields: {}, topLevel: fallbackMessage };
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm(signInEmail, signInPassword, false)) return;
+    const zodErrors = validateForm(signInEmail, signInPassword, false);
+    if (zodErrors) {
+      setSignInErrors(zodErrors);
+      return;
+    }
+    setSignInErrors({});
 
     setIsSubmitting(true);
     const { error } = await signIn(signInEmail, signInPassword);
@@ -64,7 +98,15 @@ export default function Auth() {
       if (error.message.includes('Invalid credentials')) {
         toast.error('Email hoặc mật khẩu không đúng');
       } else {
-        toast.error('Đăng nhập thất bại: ' + error.message);
+        const { fields, topLevel } = toFieldErrors(
+          error,
+          'Đăng nhập thất bại: ' + error.message,
+        );
+        if (Object.keys(fields).length > 0) {
+          setSignInErrors(fields);
+        } else if (topLevel) {
+          toast.error(topLevel);
+        }
       }
     } else {
       toast.success('Đăng nhập thành công!');
@@ -74,7 +116,12 @@ export default function Auth() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm(signUpEmail, signUpPassword, true)) return;
+    const zodErrors = validateForm(signUpEmail, signUpPassword, true);
+    if (zodErrors) {
+      setSignUpErrors(zodErrors);
+      return;
+    }
+    setSignUpErrors({});
 
     setIsSubmitting(true);
     const { error } = await signUp(signUpEmail, signUpPassword);
@@ -82,9 +129,17 @@ export default function Auth() {
 
     if (error) {
       if (error.message.includes('already registered')) {
-        toast.error('Email này đã được đăng ký');
+        setSignUpErrors({ email: 'Email này đã được đăng ký' });
       } else {
-        toast.error('Đăng ký thất bại: ' + error.message);
+        const { fields, topLevel } = toFieldErrors(
+          error,
+          'Đăng ký thất bại: ' + error.message,
+        );
+        if (Object.keys(fields).length > 0) {
+          setSignUpErrors(fields);
+        } else if (topLevel) {
+          toast.error(topLevel);
+        }
       }
     } else {
       toast.success('Đăng ký thành công! Đang chuyển hướng...');
@@ -159,7 +214,7 @@ export default function Auth() {
                   </span>
                 </div>
 
-                <form onSubmit={handleSignIn} className="space-y-4">
+                <form onSubmit={handleSignIn} className="space-y-4" noValidate>
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">Email</Label>
                     <div className="relative">
@@ -171,9 +226,16 @@ export default function Auth() {
                         value={signInEmail}
                         onChange={(e) => setSignInEmail(e.target.value)}
                         className="pl-10"
+                        aria-invalid={!!signInErrors.email}
+                        aria-describedby={signInErrors.email ? 'signin-email-error' : undefined}
                         required
                       />
                     </div>
+                    {signInErrors.email && (
+                      <p id="signin-email-error" className="text-xs text-destructive">
+                        {signInErrors.email}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -187,9 +249,16 @@ export default function Auth() {
                         value={signInPassword}
                         onChange={(e) => setSignInPassword(e.target.value)}
                         className="pl-10"
+                        aria-invalid={!!signInErrors.password}
+                        aria-describedby={signInErrors.password ? 'signin-password-error' : undefined}
                         required
                       />
                     </div>
+                    {signInErrors.password && (
+                      <p id="signin-password-error" className="text-xs text-destructive">
+                        {signInErrors.password}
+                      </p>
+                    )}
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
@@ -211,7 +280,7 @@ export default function Auth() {
                   Đăng ký để bắt đầu đánh giá đồng nghiệp
                 </CardDescription>
 
-                <form onSubmit={handleSignUp} className="space-y-4">
+                <form onSubmit={handleSignUp} className="space-y-4" noValidate>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <div className="relative">
@@ -223,9 +292,16 @@ export default function Auth() {
                         value={signUpEmail}
                         onChange={(e) => setSignUpEmail(e.target.value)}
                         className="pl-10"
+                        aria-invalid={!!signUpErrors.email}
+                        aria-describedby={signUpErrors.email ? 'signup-email-error' : undefined}
                         required
                       />
                     </div>
+                    {signUpErrors.email && (
+                      <p id="signup-email-error" className="text-xs text-destructive">
+                        {signUpErrors.email}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -239,10 +315,17 @@ export default function Auth() {
                         value={signUpPassword}
                         onChange={(e) => setSignUpPassword(e.target.value)}
                         className="pl-10"
+                        aria-invalid={!!signUpErrors.password}
+                        aria-describedby={signUpErrors.password ? 'signup-password-error' : undefined}
                         required
                         minLength={8}
                       />
                     </div>
+                    {signUpErrors.password && (
+                      <p id="signup-password-error" className="text-xs text-destructive">
+                        {signUpErrors.password}
+                      </p>
+                    )}
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
@@ -262,7 +345,7 @@ export default function Auth() {
         </Card>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          &copy; 2024 Hệ Thống Đánh Giá Giảng Viên
+          &copy; 2026 Hệ Thống Đánh Giá Giảng Viên
         </p>
       </div>
     </div>

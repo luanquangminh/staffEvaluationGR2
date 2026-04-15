@@ -42,10 +42,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
       );
     }
 
+    // FE-5: preserve extra fields (e.g. `fields` from ValidationPipe) so the
+    // frontend can render inline form errors. Strip server-internal keys.
+    const extras =
+      exceptionResponse && typeof exceptionResponse === 'object'
+        ? Object.fromEntries(
+            Object.entries(exceptionResponse as Record<string, unknown>).filter(
+              ([k]) => !['statusCode', 'message', 'error'].includes(k),
+            ),
+          )
+        : {};
+
     response.status(status).json({
       statusCode: status,
       message,
       error,
+      ...extras,
       timestamp: new Date().toISOString(),
       path: request.url,
     });

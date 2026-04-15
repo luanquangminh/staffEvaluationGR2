@@ -9,7 +9,7 @@ import {
   UseGuards,
   ForbiddenException,
 } from '@nestjs/common';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { EvaluationsService } from './evaluations.service';
 import { BulkEvaluationDto, EvaluationQueryDto, EvaluationMyQueryDto } from './dto/evaluations.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -127,7 +127,6 @@ export class EvaluationsController {
   }
 
   @Post('bulk')
-  @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 20, ttl: 60000 } })
   @ApiOperation({ summary: 'Submit bulk evaluations for an active period' })
   @ApiResponse({ status: 201, description: 'Evaluations created/updated' })

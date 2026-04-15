@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { PaginationControls } from '@/components/PaginationControls';
 import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, Loader2, Search, Link } from 'lucide-react';
+import { TableSkeleton } from '@/components/TableSkeleton';
 
 const PAGE_SIZE = 20;
 
@@ -227,14 +228,6 @@ export default function AdminStaff() {
     return units?.find(u => u.id === id)?.name || '-';
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6 animate-fade-in">
       <Card>
@@ -317,9 +310,11 @@ export default function AdminStaff() {
         <CardContent>
           <div className="flex items-center gap-4 mb-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
+              <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <Input
+                type="search"
                 placeholder="Tìm kiếm theo tên, mã GV, email..."
+                aria-label="Tìm kiếm giảng viên"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="w-64"
@@ -361,7 +356,13 @@ export default function AdminStaff() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedStaff.map(s => (
+                {isLoading ? (
+                  <TableSkeleton
+                    rows={8}
+                    columns={6}
+                    columnWidths={['w-16', 'w-40', 'w-48', 'w-24', 'w-32', 'w-24']}
+                  />
+                ) : paginatedStaff.map(s => (
                   <TableRow key={s.id}>
                     <TableCell className="font-mono text-sm">{s.staffcode}</TableCell>
                     <TableCell className="font-medium">{s.name}</TableCell>

@@ -3,6 +3,30 @@ const REQUEST_TIMEOUT_MS = 30_000;
 
 type SessionExpiredHandler = () => void;
 
+// FE-5: Preserves the full shape of a backend error so callers can decide
+// whether to show a toast, highlight a specific field, or both. The
+// `fields` map is populated by NestJS ValidationPipe's exceptionFactory
+// (see main.ts) — values are arrays of constraint messages per field path.
+export class ApiError extends Error {
+  readonly statusCode: number;
+  readonly fields: Record<string, string[]>;
+
+  constructor(message: string, statusCode: number, fields: Record<string, string[]> = {}) {
+    super(message);
+    this.name = 'ApiError';
+    this.statusCode = statusCode;
+    this.fields = fields;
+  }
+
+  hasFieldErrors(): boolean {
+    return Object.keys(this.fields).length > 0;
+  }
+
+  firstFieldError(field: string): string | undefined {
+    return this.fields[field]?.[0];
+  }
+}
+
 class ApiClient {
   private refreshPromise: Promise<boolean> | null = null;
   private onSessionExpired: SessionExpiredHandler | null = null;
@@ -102,7 +126,14 @@ class ApiClient {
 
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
-      throw new Error(body.message || `Request failed: ${res.status}`);
+      const rawMessage = body.message;
+      // NestJS default ValidationPipe returns message as string[]; our
+      // custom exceptionFactory returns a plain string. Handle both.
+      const message = Array.isArray(rawMessage)
+        ? rawMessage[0] ?? `Request failed: ${res.status}`
+        : rawMessage || `Request failed: ${res.status}`;
+      const fields = (body.fields && typeof body.fields === 'object') ? body.fields : {};
+      throw new ApiError(message, res.status, fields);
     }
 
     // Handle 204 No Content

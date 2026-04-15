@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe, Logger, BadRequestException, ValidationError } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
@@ -49,8 +50,8 @@ async function bootstrap() {
   // Serve uploaded files (avatars, etc.)
   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
 
-  // Global exception filter and logging interceptor
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // Global exception filters — order matters: specific (Prisma) before catch-all (Http)
+  app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   // Request body size limit (prevent OOM from large payloads)
@@ -58,6 +59,9 @@ async function bootstrap() {
   app.use(require('express').urlencoded({ limit: '100kb', extended: true }));
 
   // Global validation pipe
+  // FE-5: `exceptionFactory` emits field-level errors so the frontend can
+  // surface inline validation on the offending field instead of a generic
+  // toast. Shape: { statusCode, message, error, fields: { email: [...] } }.
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -65,6 +69,27 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       transformOptions: {
         enableImplicitConversion: true,
+      },
+      exceptionFactory: (errors: ValidationError[]) => {
+        const fields: Record<string, string[]> = {};
+        const walk = (errs: ValidationError[], prefix = '') => {
+          for (const err of errs) {
+            const path = prefix ? `${prefix}.${err.property}` : err.property;
+            if (err.constraints) {
+              fields[path] = Object.values(err.constraints);
+            }
+            if (err.children && err.children.length > 0) {
+              walk(err.children, path);
+            }
+          }
+        };
+        walk(errors);
+        return new BadRequestException({
+          statusCode: 400,
+          message: 'Validation failed',
+          error: 'Bad Request',
+          fields,
+        });
       },
     }),
   );

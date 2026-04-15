@@ -7,6 +7,8 @@ import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 import * as fs from 'fs';
 import * as path from 'path';
 
+const STAFF_FIND_ALL_HARD_CAP = 10000;
+
 @Injectable()
 export class StaffService {
   private readonly logger = new Logger(StaffService.name);
@@ -37,12 +39,23 @@ export class StaffService {
       } satisfies PaginatedResult<typeof data[number]>;
     }
 
-    return this.prisma.staff.findMany({
-      orderBy: { id: 'asc' },
-      include: {
-        organizationUnit: true,
-      },
-    });
+    // Unpaginated: hard cap to prevent memory exhaustion on unbounded lists
+    const [data, total] = await Promise.all([
+      this.prisma.staff.findMany({
+        orderBy: { id: 'asc' },
+        include: { organizationUnit: true },
+        take: STAFF_FIND_ALL_HARD_CAP,
+      }),
+      this.prisma.staff.count(),
+    ]);
+
+    if (total > STAFF_FIND_ALL_HARD_CAP) {
+      this.logger.warn(
+        `staff.findAll truncated at ${STAFF_FIND_ALL_HARD_CAP} of ${total} rows — request pagination for full results`,
+      );
+    }
+
+    return data;
   }
 
   async findOne(id: number) {
@@ -156,12 +169,16 @@ export class StaffService {
       throw new ForbiddenException('You can only update your own avatar');
     }
 
-    // Delete old avatar file if exists
+    // Delete old avatar file if exists. Fire-and-forget on purpose — we don't
+    // block the DB update on filesystem cleanup. `void` marks the intent
+    // explicitly and satisfies no-floating-promises.
     if (staff.avatar) {
       const oldPath = path.join(process.cwd(), staff.avatar);
-      fs.promises.unlink(oldPath).catch(err =>
-        this.logger.warn(`Failed to delete old avatar: ${err.message}`),
-      );
+      void fs.promises.unlink(oldPath).catch((err: NodeJS.ErrnoException) => {
+        if (err.code !== 'ENOENT') {
+          this.logger.warn(`Failed to delete old avatar ${oldPath}: ${err.message}`);
+        }
+      });
     }
 
     return this.prisma.staff.update({

@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { Leaderboard, LeaderboardSortField, LeaderboardSortDir } from '@/components/history/Leaderboard';
 import {
     useAllPeriods,
     useReceivedEvaluations,
@@ -16,13 +17,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { TableSkeleton } from '@/components/TableSkeleton';
 import { UserAvatar } from '@/components/UserAvatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertCircle, Loader2, History as HistoryIcon, TrendingUp, Star, Users, BarChart3, GitCompareArrows, Search, GraduationCap, Building, ArrowLeft, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { AlertCircle, Loader2, History as HistoryIcon, TrendingUp, Star, Users, BarChart3, GitCompareArrows, Search, Building, ArrowLeft } from 'lucide-react';
 
-type SortField = 'name' | 'reviewCount' | 'avg' | `q_${number}`;
-type SortDir = 'asc' | 'desc';
+type SortField = LeaderboardSortField;
+type SortDir = LeaderboardSortDir;
 import { Button } from '@/components/ui/button';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -41,7 +44,8 @@ export default function HistoryPage() {
     const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
 
     const { data: receivedEvals, isLoading: loadingReceived } = useReceivedEvaluations(selectedPeriodId);
-    const { data: allEvals, isLoading: loadingAll } = useAllEvaluations(isAdmin ? selectedPeriodId : null);
+    const { data: allEvalsPage, isLoading: loadingAll } = useAllEvaluations(isAdmin ? selectedPeriodId : null);
+    const allEvals = allEvalsPage?.data;
 
     // Staff lookup state
     const [lookupStaffId, setLookupStaffId] = useState<number | null>(null);
@@ -659,6 +663,8 @@ export default function HistoryPage() {
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <Input
+                                        type="search"
+                                        aria-label="Tìm kiếm giảng viên"
                                         placeholder="Nhập tên, mã GV hoặc email..."
                                         value={lookupSearch}
                                         onChange={e => setLookupSearch(e.target.value)}
@@ -841,106 +847,43 @@ export default function HistoryPage() {
                     {/* ═══════ Tab 3: Điểm tất cả mọi người ═══════ */}
                     <TabsContent value="everyone" className="space-y-4">
                         {loadingAll ? (
-                            <div className="flex items-center justify-center h-32">
-                                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                            </div>
-                        ) : everyoneSummary && everyoneSummary.staffList.length > 0 ? (
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="text-lg">Bảng xếp hạng — {selectedPeriod?.name}</CardTitle>
-                                    <CardDescription>
-                                        Điểm trung bình của {everyoneSummary.staffList.length} giảng viên, sắp xếp từ cao đến thấp
-                                    </CardDescription>
+                                    <Skeleton className="h-6 w-64" />
+                                    <Skeleton className="h-4 w-96 mt-2" />
                                 </CardHeader>
                                 <CardContent>
                                     <div className="rounded-md border">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
-                                                    <TableHead className="w-12 text-center">#</TableHead>
-                                                    <TableHead className="cursor-pointer select-none hover:bg-muted/50" onClick={() => toggleEvSort('name')}>
-                                                        <span className="inline-flex items-center gap-1">
-                                                            Giảng viên
-                                                            {evSortField === 'name' ? (evSortDir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />) : <ArrowUpDown className="h-3 w-3 opacity-30" />}
-                                                        </span>
-                                                    </TableHead>
-                                                    <TableHead className="text-center cursor-pointer select-none hover:bg-muted/50" onClick={() => toggleEvSort('reviewCount')}>
-                                                        <span className="inline-flex items-center gap-1 justify-center">
-                                                            Số người ĐG
-                                                            {evSortField === 'reviewCount' ? (evSortDir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />) : <ArrowUpDown className="h-3 w-3 opacity-30" />}
-                                                        </span>
-                                                    </TableHead>
-                                                    {questions?.map(q => (
-                                                        <TableHead
-                                                            key={q.id}
-                                                            className="text-center text-xs max-w-[100px] cursor-pointer select-none hover:bg-muted/50"
-                                                            title={q.title}
-                                                            onClick={() => toggleEvSort(`q_${q.id}`)}
-                                                        >
-                                                            <span className="inline-flex items-center gap-1 justify-center">
-                                                                {q.title.length > 12 ? q.title.substring(0, 12) + '…' : q.title}
-                                                                {evSortField === `q_${q.id}` ? (evSortDir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />) : <ArrowUpDown className="h-3 w-3 opacity-30" />}
-                                                            </span>
-                                                        </TableHead>
-                                                    ))}
-                                                    <TableHead className="text-center font-bold cursor-pointer select-none hover:bg-muted/50" onClick={() => toggleEvSort('avg')}>
-                                                        <span className="inline-flex items-center gap-1 justify-center">
-                                                            TB chung
-                                                            {evSortField === 'avg' ? (evSortDir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />) : <ArrowUpDown className="h-3 w-3 opacity-30" />}
-                                                        </span>
-                                                    </TableHead>
+                                                    <TableHead className="w-12">#</TableHead>
+                                                    <TableHead>Giảng viên</TableHead>
+                                                    <TableHead className="text-center">Số người ĐG</TableHead>
+                                                    <TableHead className="text-center">TB chung</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {sortedEveryoneList.map((staff, idx) => (
-                                                    <TableRow key={staff.id} className={staff.id === staffId ? 'bg-primary/5 font-medium' : ''}>
-                                                        <TableCell className="text-center font-mono">
-                                                            {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <div className="flex items-center gap-2">
-                                                                <UserAvatar staff={staff} className="h-8 w-8 text-xs" />
-                                                                <span className="text-sm">
-                                                                    {staff.name}
-                                                                    {staff.id === staffId && (
-                                                                        <Badge variant="outline" className="ml-2 text-xs">Bạn</Badge>
-                                                                    )}
-                                                                </span>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell className="text-center">
-                                                            <Badge variant="outline">{staff.reviewCount}</Badge>
-                                                        </TableCell>
-                                                        {questions?.map(q => {
-                                                            const qData = staff.byQuestion.get(q.id);
-                                                            const qAvg = qData && qData.count > 0 ? qData.total / qData.count : null;
-                                                            return (
-                                                                <TableCell key={q.id} className="text-center">
-                                                                    {qAvg !== null ? (
-                                                                        <span className={`text-sm font-medium ${qAvg >= 3 ? 'text-green-600' : qAvg >= 2 ? 'text-yellow-600' : 'text-red-500'}`}>
-                                                                            {qAvg.toFixed(1)}
-                                                                        </span>
-                                                                    ) : (
-                                                                        <span className="text-muted-foreground text-xs">—</span>
-                                                                    )}
-                                                                </TableCell>
-                                                            );
-                                                        })}
-                                                        <TableCell className="text-center">
-                                                            <Badge
-                                                                variant={staff.avg >= 3 ? 'default' : staff.avg >= 2 ? 'secondary' : 'destructive'}
-                                                                className="text-sm font-bold px-3"
-                                                            >
-                                                                {staff.avg.toFixed(2)}
-                                                            </Badge>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
+                                                <TableSkeleton
+                                                    rows={8}
+                                                    columns={4}
+                                                    columnWidths={['w-8', 'w-40', 'w-16', 'w-12']}
+                                                />
                                             </TableBody>
                                         </Table>
                                     </div>
                                 </CardContent>
                             </Card>
+                        ) : everyoneSummary && everyoneSummary.staffList.length > 0 ? (
+                            <Leaderboard
+                                staffList={sortedEveryoneList}
+                                questions={questions}
+                                currentStaffId={staffId}
+                                selectedPeriodName={selectedPeriod?.name}
+                                sortField={evSortField}
+                                sortDir={evSortDir}
+                                onToggleSort={toggleEvSort}
+                            />
                         ) : (
                             <Card>
                                 <CardContent className="pt-6">

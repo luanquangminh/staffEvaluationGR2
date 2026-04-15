@@ -10,7 +10,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import * as express from 'express';
@@ -39,7 +39,6 @@ export class AuthController {
   }
 
   @Post('register')
-  @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
@@ -49,7 +48,6 @@ export class AuthController {
   }
 
   @Post('login')
-  @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 requests per minute
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiResponse({ status: 200, description: 'Login successful, returns access and refresh tokens' })
@@ -162,7 +160,6 @@ export class AuthController {
   }
 
   @Post('microsoft/token')
-  @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: 'Exchange one-time code for JWT tokens after Microsoft OAuth' })
   @ApiResponse({ status: 200, description: 'Returns access and refresh tokens' })

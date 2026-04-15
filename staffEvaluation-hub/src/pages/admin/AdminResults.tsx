@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, BarChart3, TrendingUp, Users, Download, CalendarDays, Eye, FileText, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -391,10 +392,19 @@ export default function AdminResults() {
         </CardContent>
       </Card>
 
-      {/* Loading evaluations */}
+      {/* FE-7: loading state uses stat-card skeletons instead of a centered spinner. */}
       {loadingEval && (
-        <div className="flex items-center justify-center h-32">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <div className="grid gap-4 md:grid-cols-3" aria-hidden="true">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="pb-2">
+                <Skeleton className="h-4 w-32" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-20" />
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
 

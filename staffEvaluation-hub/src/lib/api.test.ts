@@ -127,6 +127,33 @@ describe('ApiClient', () => {
       expect(store.refreshToken).toBeUndefined();
     });
 
+    // FE-2 — explicit assertion that the retry uses the new access token
+    // after refresh succeeds (above test only checks return value + store).
+    it('should retry the original request with the newly issued access token', async () => {
+      api.setTokens('expired-token', 'valid-refresh');
+
+      mockFetch.mockResolvedValueOnce(new Response('{}', { status: 401 }));
+      mockFetch.mockResolvedValueOnce(
+        jsonResponse({ accessToken: 'fresh-access', refreshToken: 'fresh-refresh' }),
+      );
+      mockFetch.mockResolvedValueOnce(jsonResponse({ ok: true }));
+
+      await api.get('/protected');
+
+      // 3 calls: original 401, /auth/refresh, retried GET.
+      expect(mockFetch).toHaveBeenCalledTimes(3);
+      const [retryUrl, retryOptions] = mockFetch.mock.calls[2];
+      expect(retryUrl).toContain('/protected');
+      // ApiClient mutates the headers object in place when retrying, so the
+      // final state we assert against is the retry — which must carry the
+      // freshly-issued access token.
+      expect(retryOptions.headers.Authorization).toBe('Bearer fresh-access');
+      // /auth/refresh must have been called with the stored refresh token.
+      const [refreshUrl, refreshOptions] = mockFetch.mock.calls[1];
+      expect(refreshUrl).toContain('/auth/refresh');
+      expect(JSON.parse(refreshOptions.body)).toEqual({ refreshToken: 'valid-refresh' });
+    });
+
     it('should coalesce concurrent refresh requests', async () => {
       api.setTokens('expired-token', 'valid-refresh');
 

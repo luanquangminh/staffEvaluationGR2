@@ -30,6 +30,13 @@ export function MainLayout() {
 
   return (
     <SidebarProvider>
+      {/* FE-6: skip-to-content link for keyboard users (WCAG 2.4.1) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg"
+      >
+        Bỏ qua và đi tới nội dung chính
+      </a>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         
@@ -77,7 +84,7 @@ export function MainLayout() {
           </header>
           
           {/* Main Content */}
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
+          <main id="main-content" className="flex-1 p-4 md:p-6 overflow-auto" tabIndex={-1}>
             <Outlet />
           </main>
         </div>

@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { StaffModule } from './staff/staff.module';
@@ -23,23 +24,28 @@ import { validateEnv } from './config/env.validation';
         return config;
       },
     }),
-    ThrottlerModule.forRoot([
-      {
-        name: 'short',
-        ttl: 1000,
-        limit: 3,
-      },
-      {
-        name: 'medium',
-        ttl: 10000,
-        limit: 20,
-      },
-      {
-        name: 'long',
-        ttl: 60000,
-        limit: 100,
-      },
-    ]),
+    ThrottlerModule.forRoot({
+      // Skip throttling in tests — real-DB / fast-iteration suites should not
+      // hit rate limits. Production behavior is unchanged.
+      skipIf: () => process.env.NODE_ENV === 'test',
+      throttlers: [
+        {
+          name: 'short',
+          ttl: 1000,
+          limit: 3,
+        },
+        {
+          name: 'medium',
+          ttl: 10000,
+          limit: 20,
+        },
+        {
+          name: 'long',
+          ttl: 60000,
+          limit: 100,
+        },
+      ],
+    }),
     PrismaModule,
     AuthModule,
     StaffModule,
@@ -52,7 +58,13 @@ import { validateEnv } from './config/env.validation';
     HealthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    // Apply ThrottlerGuard globally. Per-endpoint @Throttle() overrides still work.
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

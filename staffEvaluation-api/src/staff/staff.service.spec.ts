@@ -48,12 +48,13 @@ describe('StaffService', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of staff', async () => {
+    it('should return an array of staff with hard cap', async () => {
       const mockStaff = [
         { id: 1, name: 'John Doe', staffcode: 'GV001', organizationUnit: null },
         { id: 2, name: 'Jane Doe', staffcode: 'GV002', organizationUnit: null },
       ];
       mockPrismaService.staff.findMany.mockResolvedValue(mockStaff);
+      mockPrismaService.staff.count.mockResolvedValue(2);
 
       const result = await service.findAll();
 
@@ -61,7 +62,26 @@ describe('StaffService', () => {
       expect(mockPrismaService.staff.findMany).toHaveBeenCalledWith({
         orderBy: { id: 'asc' },
         include: { organizationUnit: true },
+        take: 10000,
       });
+    });
+
+    it('should log a warning when unpaginated result is truncated at hard cap', async () => {
+      const mockStaff = Array.from({ length: 10000 }, (_, i) => ({
+        id: i + 1,
+        name: `Staff ${i}`,
+      }));
+      mockPrismaService.staff.findMany.mockResolvedValue(mockStaff);
+      mockPrismaService.staff.count.mockResolvedValue(12500);
+      const warnSpy = jest.spyOn((service as any).logger, 'warn').mockImplementation(() => {});
+
+      const result = await service.findAll();
+
+      expect(result).toHaveLength(10000);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('truncated at 10000 of 12500'),
+      );
+      warnSpy.mockRestore();
     });
 
     it('should return empty array when no staff exists', async () => {
