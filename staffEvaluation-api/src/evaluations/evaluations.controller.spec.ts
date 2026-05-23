@@ -3,6 +3,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ForbiddenException } from '@nestjs/common';
 import { EvaluationsController } from './evaluations.controller';
 import { EvaluationsService } from './evaluations.service';
+import { RolePermissionsService } from '../role-permissions/role-permissions.service';
 
 describe('EvaluationsController', () => {
   let controller: EvaluationsController;
@@ -21,12 +22,24 @@ describe('EvaluationsController', () => {
     getPendingEvaluations: jest.fn(),
   };
 
+  const mockAdminUser = {
+    id: 'user-123',
+    sub: 'user-123',
+    email: 'test@example.com',
+    staffId: 1,
+    roles: ['admin'],
+  };
+
   const mockUser = {
     id: 'user-123',
     sub: 'user-123',
     email: 'test@example.com',
     staffId: 1,
     roles: ['user'],
+  };
+
+  const mockRolePermissionsService = {
+    findOne: jest.fn().mockResolvedValue('all'),
   };
 
   beforeEach(async () => {
@@ -37,6 +50,10 @@ describe('EvaluationsController', () => {
         {
           provide: EvaluationsService,
           useValue: mockEvaluationsService,
+        },
+        {
+          provide: RolePermissionsService,
+          useValue: mockRolePermissionsService,
         },
       ],
     }).compile();
@@ -52,30 +69,30 @@ describe('EvaluationsController', () => {
   });
 
   describe('findAll', () => {
-    it('should return all evaluations without filters', async () => {
+    it('should return all evaluations without filters (admin)', async () => {
       const mockEvaluations = [
         { id: 1, groupid: 1, reviewerid: 1, evaluateeid: 2, point: 4 },
       ];
       mockEvaluationsService.findAll.mockResolvedValue(mockEvaluations);
 
-      const result = await controller.findAll({});
+      const result = await controller.findAll({}, mockAdminUser);
 
       expect(result).toEqual(mockEvaluations);
       expect(mockEvaluationsService.findAll).toHaveBeenCalledWith({});
     });
 
-    it('should filter by periodId', async () => {
+    it('should filter by periodId (admin)', async () => {
       mockEvaluationsService.findAll.mockResolvedValue([]);
 
-      await controller.findAll({ periodId: 1 });
+      await controller.findAll({ periodId: 1 }, mockAdminUser);
 
       expect(mockEvaluationsService.findAll).toHaveBeenCalledWith({ periodId: 1 });
     });
 
-    it('should filter by multiple params', async () => {
+    it('should filter by multiple params (admin)', async () => {
       mockEvaluationsService.findAll.mockResolvedValue([]);
 
-      await controller.findAll({ groupId: 1, reviewerId: 2, evaluateeId: 3, periodId: 1 });
+      await controller.findAll({ groupId: 1, reviewerId: 2, evaluateeId: 3, periodId: 1 }, mockAdminUser);
 
       expect(mockEvaluationsService.findAll).toHaveBeenCalledWith({
         groupId: 1,
@@ -116,7 +133,7 @@ describe('EvaluationsController', () => {
       const result = await controller.findReceived(mockUser, {});
 
       expect(result).toEqual(mockEvaluations);
-      expect(mockEvaluationsService.findByEvaluatee).toHaveBeenCalledWith(1, undefined, undefined);
+      expect(mockEvaluationsService.findByEvaluatee).toHaveBeenCalledWith(1, undefined, undefined, false);
     });
 
     it('should filter by groupId and periodId', async () => {
@@ -124,7 +141,7 @@ describe('EvaluationsController', () => {
 
       await controller.findReceived(mockUser, { groupId: 1, periodId: 2 });
 
-      expect(mockEvaluationsService.findByEvaluatee).toHaveBeenCalledWith(1, 1, 2);
+      expect(mockEvaluationsService.findByEvaluatee).toHaveBeenCalledWith(1, 1, 2, false);
     });
   });
 

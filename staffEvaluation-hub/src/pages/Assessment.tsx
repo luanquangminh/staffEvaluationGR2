@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useMyGroups, useColleaguesInGroup, useQuestions, useActivePeriods, useMyEvaluations, Staff, Evaluation } from '@/hooks/useStaff';
+import { useMyGroups, useColleaguesInGroup, useActiveQuestions, useActivePeriods, useMyEvaluations, Staff, Evaluation } from '@/hooks/useStaff';
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
@@ -37,7 +37,7 @@ export default function Assessment() {
   const { data: activePeriods } = useActivePeriods();
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const { data: colleagues, error: colleaguesError } = useColleaguesInGroup(selectedGroupId, staffId);
-  const { data: questions, error: questionsError } = useQuestions();
+  const { data: questions, error: questionsError } = useActiveQuestions();
   const [selectedColleague, setSelectedColleague] = useState<Staff | null>(null);
   const [evaluations, setEvaluations] = useState<EvaluationData>({});
   const [isSaving, setIsSaving] = useState(false);

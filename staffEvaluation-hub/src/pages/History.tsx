@@ -22,7 +22,9 @@ import { TableSkeleton } from '@/components/TableSkeleton';
 import { UserAvatar } from '@/components/UserAvatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertCircle, Loader2, History as HistoryIcon, TrendingUp, Star, Users, BarChart3, GitCompareArrows, Search, Building, ArrowLeft } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { AlertCircle, Loader2, History as HistoryIcon, TrendingUp, Star, Users, BarChart3, GitCompareArrows, Search, Building, ArrowLeft, EyeOff } from 'lucide-react';
 
 type SortField = LeaderboardSortField;
 type SortDir = LeaderboardSortDir;
@@ -42,8 +44,9 @@ export default function HistoryPage() {
     const { data: questions } = useQuestions();
     const { data: allStaff } = useStaff();
     const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
+    const [showReviewer, setShowReviewer] = useState(false);
 
-    const { data: receivedEvals, isLoading: loadingReceived } = useReceivedEvaluations(selectedPeriodId);
+    const { data: receivedEvals, isLoading: loadingReceived } = useReceivedEvaluations(selectedPeriodId, isAdmin && showReviewer);
     const { data: allEvalsPage, isLoading: loadingAll } = useAllEvaluations(isAdmin ? selectedPeriodId : null);
     const allEvals = allEvalsPage?.data;
 
@@ -611,30 +614,60 @@ export default function HistoryPage() {
                                 {/* Per-Reviewer Breakdown */}
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="text-lg">Chi tiết theo người đánh giá</CardTitle>
-                                        <CardDescription>Điểm trung bình mà mỗi đồng nghiệp đã cho bạn</CardDescription>
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div>
+                                                <CardTitle className="text-lg">Chi tiết theo người đánh giá</CardTitle>
+                                                <CardDescription>
+                                                    {selectedPeriod?.isAnonymous && !showReviewer
+                                                        ? 'Đợt này đánh giá ẩn danh — danh tính người chấm được bảo mật'
+                                                        : 'Điểm trung bình mà mỗi đồng nghiệp đã cho bạn'}
+                                                </CardDescription>
+                                            </div>
+                                            {isAdmin && selectedPeriod?.isAnonymous && (
+                                                <div className="flex items-center gap-2 shrink-0">
+                                                    <Switch
+                                                        id="showReviewer"
+                                                        checked={showReviewer}
+                                                        onCheckedChange={setShowReviewer}
+                                                    />
+                                                    <Label htmlFor="showReviewer" className="text-sm cursor-pointer whitespace-nowrap">
+                                                        Hiện tên người chấm
+                                                    </Label>
+                                                </div>
+                                            )}
+                                        </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="grid gap-3 sm:grid-cols-2">
-                                            {Array.from(receivedSummary.byReviewer.entries()).map(([reviewerId, data]) => {
-                                                const avg = data.evals.length > 0 ? data.evals.reduce((sum, e) => sum + (e.point ?? 0), 0) / data.evals.length : 0;
-                                                return (
-                                                    <div key={reviewerId} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
-                                                        <UserAvatar staff={data} className="h-10 w-10" />
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="font-medium text-sm truncate">{data.name}</p>
-                                                            <p className="text-xs text-muted-foreground">{data.evals.length} tiêu chí</p>
+                                        {selectedPeriod?.isAnonymous && !showReviewer ? (
+                                            <div className="flex flex-col items-center justify-center py-8 text-muted-foreground gap-2">
+                                                <EyeOff className="h-8 w-8 opacity-50" />
+                                                <p className="text-sm">Danh tính người đánh giá được ẩn trong đợt này</p>
+                                                {!isAdmin && (
+                                                    <p className="text-xs">Chỉ admin mới có thể xem thông tin này</p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="grid gap-3 sm:grid-cols-2">
+                                                {Array.from(receivedSummary.byReviewer.entries()).map(([reviewerId, data]) => {
+                                                    const avg = data.evals.length > 0 ? data.evals.reduce((sum, e) => sum + (e.point ?? 0), 0) / data.evals.length : 0;
+                                                    return (
+                                                        <div key={reviewerId} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
+                                                            <UserAvatar staff={data} className="h-10 w-10" />
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="font-medium text-sm truncate">{data.name}</p>
+                                                                <p className="text-xs text-muted-foreground">{data.evals.length} tiêu chí</p>
+                                                            </div>
+                                                            <Badge
+                                                                variant={avg >= 3 ? 'default' : avg >= 2 ? 'secondary' : 'destructive'}
+                                                                className="text-sm font-bold px-3"
+                                                            >
+                                                                {avg.toFixed(1)}
+                                                            </Badge>
                                                         </div>
-                                                        <Badge
-                                                            variant={avg >= 3 ? 'default' : avg >= 2 ? 'secondary' : 'destructive'}
-                                                            className="text-sm font-bold px-3"
-                                                        >
-                                                            {avg.toFixed(1)}
-                                                        </Badge>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </>

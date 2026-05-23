@@ -16,6 +16,7 @@ export class EvaluationsService {
     groupId?: number;
     reviewerId?: number;
     evaluateeId?: number;
+    evaluateeIds?: number[];   // role-permission scoping: restrict to these staff IDs
     periodId?: number;
     page?: number;
     pageSize?: number;
@@ -24,6 +25,7 @@ export class EvaluationsService {
     if (query?.groupId) where.groupid = query.groupId;
     if (query?.reviewerId) where.reviewerid = query.reviewerId;
     if (query?.evaluateeId) where.evaluateeid = query.evaluateeId;
+    if (query?.evaluateeIds?.length) where.evaluateeid = { in: query.evaluateeIds };
     if (query?.periodId) where.periodid = query.periodId;
 
     const paginated = query?.page !== undefined || query?.pageSize !== undefined;
@@ -93,8 +95,8 @@ export class EvaluationsService {
     });
   }
 
-  async findByEvaluatee(staffId: number, groupId?: number, periodId?: number) {
-    return this.prisma.evaluation.findMany({
+  async findByEvaluatee(staffId: number, groupId?: number, periodId?: number, showReviewer = false) {
+    const results = await this.prisma.evaluation.findMany({
       where: this.buildEvalWhere('evaluateeid', staffId, groupId, periodId),
       include: {
         reviewer: { select: { id: true, name: true, avatar: true } },
@@ -103,6 +105,18 @@ export class EvaluationsService {
         period: true,
       },
     });
+
+    // Strip reviewer identity when the period is anonymous and admin has not requested override
+    if (!showReviewer) {
+      return results.map(e => {
+        if (e.period?.isAnonymous) {
+          return { ...e, reviewer: null, reviewerid: null };
+        }
+        return e;
+      });
+    }
+
+    return results;
   }
 
   async findByEvaluateeClosedPeriods(staffId: number, periodId?: number) {
@@ -120,6 +134,25 @@ export class EvaluationsService {
         period: true,
       },
     });
+  }
+
+  /**
+   * Returns all distinct staffIds that share at least one group with the given staff member.
+   * Used for 'group' level results-access permission.
+   */
+  async getGroupMemberIds(staffId: number): Promise<number[]> {
+    const staffGroups = await this.prisma.staff2Group.findMany({
+      where: { staffid: staffId },
+      select: { groupid: true },
+    });
+    const groupIds = staffGroups.map(sg => sg.groupid);
+    if (groupIds.length === 0) return [];
+    const members = await this.prisma.staff2Group.findMany({
+      where: { groupid: { in: groupIds } },
+      select: { staffid: true },
+      distinct: ['staffid'],
+    });
+    return members.map(m => m.staffid);
   }
 
   async findGroupsByStaff(staffId: number) {

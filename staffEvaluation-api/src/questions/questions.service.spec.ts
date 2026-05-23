@@ -11,6 +11,7 @@ describe('QuestionsService', () => {
     question: {
       findMany: jest.fn(),
       findUnique: jest.fn(),
+      count: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -58,6 +59,31 @@ describe('QuestionsService', () => {
       mockPrismaService.question.findMany.mockResolvedValue([]);
 
       const result = await service.findAll();
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('findActive', () => {
+    it('should return only active questions', async () => {
+      const activeQuestions = [
+        { id: 1, title: 'Active Q', description: null, isActive: true },
+      ];
+      mockPrismaService.question.findMany.mockResolvedValue(activeQuestions);
+
+      const result = await service.findActive();
+
+      expect(result).toEqual(activeQuestions);
+      expect(mockPrismaService.question.findMany).toHaveBeenCalledWith({
+        where: { isActive: true },
+        orderBy: { id: 'asc' },
+      });
+    });
+
+    it('should return empty array when no active questions exist', async () => {
+      mockPrismaService.question.findMany.mockResolvedValue([]);
+
+      const result = await service.findActive();
 
       expect(result).toEqual([]);
     });

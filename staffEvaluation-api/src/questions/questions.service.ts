@@ -35,6 +35,13 @@ export class QuestionsService {
     });
   }
 
+  async findActive() {
+    return this.prisma.question.findMany({
+      where: { isActive: true },
+      orderBy: { id: 'asc' },
+    });
+  }
+
   async findOne(id: number) {
     const question = await this.prisma.question.findUnique({
       where: { id },

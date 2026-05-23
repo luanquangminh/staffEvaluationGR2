@@ -16,9 +16,11 @@ import { ConfigService } from '@nestjs/config';
 import * as express from 'express';
 import { AuthService } from './auth.service';
 import { MicrosoftOAuthService } from './microsoft-oauth.service';
+import { HustAuthService } from './hust-auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { HustLoginDto } from './dto/hust-login.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtPayload } from './strategies/jwt.strategy';
@@ -32,6 +34,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private microsoftOAuthService: MicrosoftOAuthService,
+    private hustAuthService: HustAuthService,
     private configService: ConfigService,
   ) {
     this.frontendUrl =
@@ -76,6 +79,17 @@ export class AuthController {
     @CurrentUser() user: JwtPayload & { id: string; tokenVersion?: number },
   ) {
     return this.authService.refreshToken(user.id, user.tokenVersion);
+  }
+
+  @Post('hust-login')
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
+  @ApiOperation({ summary: 'Login with HUST email and password (verified via ToolHub API)' })
+  @ApiResponse({ status: 200, description: 'Login successful, returns JWT tokens' })
+  @ApiResponse({ status: 401, description: 'Invalid HUST credentials or non-HUST email' })
+  @ApiResponse({ status: 503, description: 'HUST auth service unavailable' })
+  async hustLogin(@Body() dto: HustLoginDto) {
+    const user = await this.hustAuthService.login(dto.email, dto.password);
+    return this.authService.generateTokenResponse(user);
   }
 
   @Get('microsoft')

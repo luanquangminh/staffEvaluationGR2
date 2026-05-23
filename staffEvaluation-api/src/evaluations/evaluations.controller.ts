@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { EvaluationsService } from './evaluations.service';
+import { RolePermissionsService } from '../role-permissions/role-permissions.service';
 import { BulkEvaluationDto, EvaluationQueryDto, EvaluationMyQueryDto } from './dto/evaluations.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -24,7 +25,10 @@ import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagg
 @Controller('evaluations')
 @UseGuards(JwtAuthGuard)
 export class EvaluationsController {
-  constructor(private evaluationsService: EvaluationsService) {}
+  constructor(
+    private evaluationsService: EvaluationsService,
+    private rolePermissionsService: RolePermissionsService,
+  ) {}
 
   private ensureStaffLinked(user: JwtPayload & { id: string }): number {
     if (!user.staffId) {
@@ -52,12 +56,39 @@ export class EvaluationsController {
   }
 
   @Get()
-  @Roles('admin', 'moderator')
-  @UseGuards(RolesGuard)
-  @ApiOperation({ summary: 'Get all evaluations (admin/moderator only)' })
-  @ApiResponse({ status: 200, description: 'List of evaluations' })
-  findAll(@Query() query: EvaluationQueryDto) {
-    return this.evaluationsService.findAll(query);
+  @ApiOperation({ summary: 'Get evaluations — scope depends on role permission config' })
+  @ApiResponse({ status: 200, description: 'List of evaluations (filtered by role permission)' })
+  @ApiResponse({ status: 403, description: 'Role has no results access' })
+  async findAll(
+    @Query() query: EvaluationQueryDto,
+    @CurrentUser() user: JwtPayload & { id: string },
+  ) {
+    // Admin always sees everything
+    if (user.roles?.includes('admin')) {
+      return this.evaluationsService.findAll(query);
+    }
+
+    // Determine effective access level from DB config for this role
+    const primaryRole = user.roles?.includes('moderator') ? 'moderator' : 'user';
+    const access = await this.rolePermissionsService.findOne(primaryRole);
+
+    if (access === 'none') {
+      throw new ForbiddenException('Your role does not have access to evaluation results');
+    }
+
+    if (access === 'all') {
+      return this.evaluationsService.findAll(query);
+    }
+
+    const staffId = this.ensureStaffLinked(user);
+
+    if (access === 'self') {
+      return this.evaluationsService.findAll({ ...query, evaluateeId: staffId });
+    }
+
+    // 'group': show evaluations for all staff in the same group(s) as this user
+    const groupMemberIds = await this.evaluationsService.getGroupMemberIds(staffId);
+    return this.evaluationsService.findAll({ ...query, evaluateeIds: groupMemberIds });
   }
 
   @Get('my')
@@ -81,7 +112,9 @@ export class EvaluationsController {
     @Query() query: EvaluationMyQueryDto,
   ) {
     const staffId = this.ensureStaffLinked(user);
-    return this.evaluationsService.findByEvaluatee(staffId, query.groupId, query.periodId);
+    // showReviewer is admin-only: non-admin users always see anonymous results when period.isAnonymous=true
+    const showReviewer = !!query.showReviewer && user.roles?.includes('admin');
+    return this.evaluationsService.findByEvaluatee(staffId, query.groupId, query.periodId, showReviewer);
   }
 
   @Get('my-groups')

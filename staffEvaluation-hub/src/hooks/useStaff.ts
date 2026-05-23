@@ -71,6 +71,13 @@ export function useQuestions() {
   });
 }
 
+export function useActiveQuestions() {
+  return useQuery({
+    queryKey: queryKeys.activeQuestions,
+    queryFn: () => api.get<Question[]>('/questions/active'),
+  });
+}
+
 export function useActivePeriods() {
   return useQuery({
     queryKey: queryKeys.activePeriods,
@@ -109,10 +116,12 @@ export function useAllPeriods() {
   });
 }
 
-export function useReceivedEvaluations(periodId: number | null) {
+export function useReceivedEvaluations(periodId: number | null, showReviewer = false) {
   return useQuery({
-    queryKey: queryKeys.receivedEvaluations(periodId),
-    queryFn: () => api.get<EvaluationWithRelations[]>(buildQuery('/evaluations/received', { periodId })),
+    queryKey: [...queryKeys.receivedEvaluations(periodId), showReviewer],
+    queryFn: () => api.get<EvaluationWithRelations[]>(
+      buildQuery('/evaluations/received', { periodId, ...(showReviewer ? { showReviewer: true } : {}) }),
+    ),
     enabled: !!periodId,
   });
 }

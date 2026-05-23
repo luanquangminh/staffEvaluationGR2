@@ -51,6 +51,7 @@ export interface Question {
   id: number;
   title: string;
   description: string | null;
+  isActive: boolean;
 }
 
 export type PeriodStatus = 'draft' | 'active' | 'closed';
@@ -62,6 +63,7 @@ export interface EvaluationPeriod {
   startDate: string;
   endDate: string;
   status: PeriodStatus;
+  isAnonymous: boolean;
 }
 
 export interface Evaluation {

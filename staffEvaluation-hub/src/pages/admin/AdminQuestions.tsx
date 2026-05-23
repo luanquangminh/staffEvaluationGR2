@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 
@@ -48,6 +49,20 @@ export default function AdminQuestions() {
       await queryClient.refetchQueries({ queryKey: queryKeys.questions });
       setIsDialogOpen(false);
       resetForm();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      toast.error('Lỗi: ' + message);
+    }
+  };
+
+  const handleToggleActive = async (q: Question) => {
+    try {
+      await api.patch(`/questions/${q.id}`, { isActive: !q.isActive });
+      toast.success(q.isActive ? 'Đã ẩn câu hỏi' : 'Đã hiện câu hỏi');
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: queryKeys.questions }),
+        queryClient.refetchQueries({ queryKey: queryKeys.activeQuestions }),
+      ]);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       toast.error('Lỗi: ' + message);
@@ -124,15 +139,23 @@ export default function AdminQuestions() {
                   <TableHead className="w-16">STT</TableHead>
                   <TableHead>Tiêu đề</TableHead>
                   <TableHead>Mô tả</TableHead>
+                  <TableHead className="w-24 text-center">Trạng thái</TableHead>
                   <TableHead className="w-24">Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {questions?.map((q, idx) => (
-                  <TableRow key={q.id}>
+                  <TableRow key={q.id} className={!q.isActive ? 'opacity-50' : ''}>
                     <TableCell className="font-mono">{idx + 1}</TableCell>
                     <TableCell className="font-medium">{q.title}</TableCell>
                     <TableCell className="text-sm text-muted-foreground max-w-md truncate">{q.description || '-'}</TableCell>
+                    <TableCell className="text-center">
+                      <Switch
+                        checked={q.isActive}
+                        onCheckedChange={() => handleToggleActive(q)}
+                        aria-label={q.isActive ? 'Ẩn câu hỏi' : 'Hiện câu hỏi'}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="icon" variant="ghost" onClick={() => openEditDialog(q)} aria-label="Sửa tiêu chí">

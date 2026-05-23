@@ -1,6 +1,9 @@
 import { useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/hooks/useAuth';
+import { api } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
 import {
   Sidebar,
   SidebarContent,
@@ -48,13 +51,25 @@ const adminItems = [
 
 const moderatorItems = [
   { title: 'Nhóm', url: '/admin/groups', icon: FolderOpen },
+  { title: 'Kết quả', url: '/admin/results', icon: BarChart3 },
 ];
 
 export function AppSidebar() {
-  const { isAdmin, isModerator } = useAuth();
+  const { isAdmin, isModerator, user } = useAuth();
   const location = useLocation();
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
+
+  // For regular users: check if they have any results access configured
+  const isRegularUser = !!user && !isAdmin && !isModerator;
+  const { data: rolePermissions = [] } = useQuery({
+    queryKey: queryKeys.rolePermissions,
+    queryFn: () => api.get<{ role: string; resultsAccess: string }[]>('/role-permissions'),
+    enabled: isRegularUser,
+  });
+  const userResultsAccess = isRegularUser
+    ? (rolePermissions.find(p => p.role === 'user')?.resultsAccess ?? 'none')
+    : 'none';
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -99,6 +114,21 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {/* Show results link for regular users who have been granted access */}
+              {isRegularUser && userResultsAccess !== 'none' && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive('/admin/results')}>
+                    <NavLink
+                      to="/admin/results"
+                      className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-sidebar-accent"
+                      activeClassName="bg-sidebar-accent text-sidebar-primary"
+                    >
+                      <BarChart3 className="h-4 w-4" />
+                      {!collapsed && <span>Kết quả</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

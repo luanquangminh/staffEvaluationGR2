@@ -1,0 +1,299 @@
+﻿Id,SubjectId,Name,GroupId trong sheet Nhóm
+1,IT1110,Tin học đại cương,3
+2,IT1140,Tin học đại cương,3
+3,IT1014,Tin học đại cương,3
+4,IT1016,Tin học đại cương,3
+5,IT1130,Tin học đại cương,3
+6,IT1108,Nhập môn lập trình,4
+7,IT1110E,Nhập môn lập trình,5
+8,IT2000,Nhập môn CNTT và TT,6
+9,IT2110,Nhập môn CNTT và TT,6
+10,IT2030,Technical Writing and Presentation,7
+11,IT3011,Cấu trúc dữ liệu và thuật toán,8
+12,IT3011E,Cấu trúc dữ liệu và thuật toán,8
+13,IT3014,Cấu trúc dữ liệu và GT,8
+14,IT3312,Cấu trúc dữ liệu và giải thuật,8
+15,IT3312E,Data Structures & Algorithms,8
+16,IT3010E,Cấu trúc dữ liệu và giải thuật,8
+17,IT3170,Thuật toán ứng dụng,8
+18,IT3680,Thuật toán ứng dụng,8
+19,IT3240E,Data Structures and Algorithms Advanced Lab,8
+20,IT3240,Lập trình C (nâng cao),8
+21,IT3170E,Applied Algorithms,8
+22,IT6690,(Không tìm thấy trong tài liệu),8
+23,IT3011Q,Cấu trúc dữ liệu và thuật toán,8
+24,IT4033,(Không tìm thấy trong tài liệu),8
+25,IT3011BS,(Không tìm thấy trong tài liệu),8
+26,IT3170BS,(Không tìm thấy trong tài liệu),8
+27,IT3230E,Data Structures and Algorithms Basic Lab,9
+28,IT3230,Lập trình C cơ bản,9
+29,IT3210,C Programming Language,9
+30,IT3220,C Programming (Introduction),9
+31,IT3020,Toán rời rạc,10
+32,IT3022,Toán rời rạc,10
+33,IT3024,Toán rời rạc,10
+34,IT3022E,Discrete Math,10
+35,IT3020E,Discrete Math,10
+36,IT4663,Tối ưu lập kế hoạch,10
+37,IT3052E,Tối ưu hóa,10
+38,IT4033E,Mathematical Modelling,10
+39,IT4906,Tính toán tiến hóa,10
+40,IT3030,Kiến trúc máy tính,11
+41,IT3034,Kiến trúc máy tính,11
+42,IT3282,Kiến trúc máy tính,11
+43,IT3282E,Computer Architecture,11
+44,IT3030E,Kiến trúc máy tính,11
+45,IT3280,Thực hành kiến trúc máy tính,11
+46,IT3280E,Assembly Language and Computer Architecture Lab,11
+47,IT3283,Kiến trúc máy tính,11
+48,IT3283E,Computer Architecture,11
+49,IT6820,(Không tìm thấy trong tài liệu),11
+50,IT3030BS,(Không tìm thấy trong tài liệu),11
+51,IT3040,Kỹ thuật lập trình,12
+52,IT3104,Kỹ thuật lập trình,12
+53,IT3040BS,(Không tìm thấy trong tài liệu),12
+54,IT3070,Hệ điều hành,13
+55,IT3072,Hệ điều hành,13
+56,IT3074,Hệ điều hành,13
+57,IT3072E,Operating Systems,13
+58,IT3070E,Operating System,13
+59,IT3070BS,(Không tìm thấy trong tài liệu),13
+60,IT3080,Mạng máy tính,14
+61,IT3082,Mạng máy tính,14
+62,IT3084,Mạng máy tính,14
+63,IT3087,Máy tính và mạng máy tính,14
+64,IT3082E,Computer Network,14
+65,IT3080E,Computer Networks,14
+66,IT3083,Mạng máy tính,14
+67,IT4427,(Không tìm thấy trong tài liệu),14
+68,IT4922,Mạng thế hệ sau,14
+69,IT6013,(Không tìm thấy trong tài liệu),14
+70,IT3090,Cơ sở dữ liệu,15
+71,IT3094,Cơ sở dữ liệu,15
+72,IT3292E,Database,15
+73,IT3090E,Cơ sở dữ liệu,15
+74,IT3290,Thực hành cơ sở dữ liệu,15
+75,IT3290E,Database Lab,15
+76,IT3090BS,(Không tìm thấy trong tài liệu),15
+77,IT3292,Cơ sở dữ liệu,15
+78,IT3100,Lập trình hướng đối tượng,16
+79,IT3102,Lý thuyết và ngôn ngữ hướng đối tượng,16
+80,IT3102E,Object-Oriented Language and Theory (Java),16
+81,IT3100E,Object-oriented Programming,16
+82,IT3103,Lập trình hướng đối tượng,16
+83,IT3100BS,(Không tìm thấy trong tài liệu),16
+84,IT3120,Phân tích và thiết kế hệ thống,17
+85,IT4364,Phân tích thiết kế hệ thống,17
+86,IT3120E,Phân tích thiết kế hệ thống,17
+87,IT3120BS,(Không tìm thấy trong tài liệu),17
+88,IT3160,Nhập môn Trí tuệ nhân tạo,18
+89,IT4042,Trí tuệ nhân tạo,18
+90,IT4044,Trí tuệ nhân tạo,18
+91,IT4042E,Artificial Intelligence,18
+92,IT3160E,Introduction to Artificial Intelligence,18
+93,IT3160BS,(Không tìm thấy trong tài liệu),18
+94,IT3180,Nhập môn công nghệ phần mềm,19
+95,IT4082,(Không tìm thấy trong tài liệu),19
+96,IT4082E,Introduction to Software Engineering,19
+97,IT3180E,Nhập môn Công nghệ phần mềm,19
+98,IT4435,Chuyên đề,19
+99,IT5433,Phát triển phần mềm sử dụng các mô hình ngôn ngữ lớn,19
+100,IT5380,(Không tìm thấy trong tài liệu),19
+101,IT6490,(Không tìm thấy trong tài liệu),19
+102,IT6022,(Không tìm thấy trong tài liệu),19
+103,IT3180BS,(Không tìm thấy trong tài liệu),19
+104,IT3323,Xây dựng chương trình dịch,20
+105,IT3323E,Compiler Construction,20
+106,IT4079,Ngôn ngữ và phương pháp dịch,20
+107,IT4182E,Compiler Construction Lab,20
+108,IT4182,Thực hành xây dựng chương trình dịch,20
+109,IT3322E,Compiler Construction,20
+110,IT3362,Kỹ năng ITSS học bằng tiếng Nhật 1,21
+111,IT3382,Kỹ năng ITSS học bằng tiếng Nhật 2,21
+112,IT3420,Điện tử cho CNTT,22
+113,IT3421,Điện tử cho CNTT,22
+114,IT3420E,Electronics for Information Technology,22
+115,IT2140,Điện tử cho CNTT lab,22
+116,IT2140E,Electronics for Information Technology lab,22
+117,IT4015,Nhập môn an toàn thông tin,23
+118,IT4015E,Introduction to Information Security,23
+119,IT4304,An toàn thông tin,23
+120,IT4010E,Nhập môn an toàn thông tin,23
+121,IT4014E,(Không tìm thấy trong tài liệu),23
+122,IT4025,Mật mã ứng dụng,23
+123,IT4025E,Mật mã ứng dụng,23
+124,IT6160,(Không tìm thấy trong tài liệu),23
+125,IT5437,(Không tìm thấy trong tài liệu),23
+126,IT6026,(Không tìm thấy trong tài liệu),23
+127,IT4015BS,(Không tìm thấy trong tài liệu),23
+128,IT4060,Lập trình mạng,24
+129,IT4062,Thực hành Lập trình mạng,24
+130,IT4062E,Network Programming,24
+131,IT4470,Đồ họa và hiện thực ảo,25
+132,IT4898,"Multimedia, trò chơi và các hệ thống giải trí",25
+133,IT6019,(Không tìm thấy trong tài liệu),25
+134,IT4110,Tính toán khoa học,26
+135,IT4110E,Scientific computing,26
+136,IT4172,Xử lý tín hiệu,27
+137,IT4174,Xử lý tín hiệu,27
+138,IT4172E,Signal processing,27
+139,IT4210,Hệ nhúng,28
+140,IT4210E,Embedded Systems,28
+141,IT4425,Phát triển phần mềm nhúng thông minh,28
+142,IT5446,Phát triển phần mềm với AUTOSAR,28
+143,IT4244,Quản trị dự án CNTT,29
+144,IT4542,Quản trị phát triển phần mềm,29
+145,IT4542E,Management of Software Development,29
+146,IT6460,(Không tìm thấy trong tài liệu),29
+147,IT4263,An ninh mạng,30
+148,IT4260E,An ninh mạng,30
+149,IT4831,Phòng chống tấn công mạng,30
+150,IT4831E,Phòng chống tấn công mạng,30
+151,IT6150,(Không tìm thấy trong tài liệu),30
+152,IT5550,Các giải pháp và chính sách an ninh mạng,30
+153,IT6012,(Không tìm thấy trong tài liệu),30
+154,IT6027,(Không tìm thấy trong tài liệu),30
+155,IT6072,(Không tìm thấy trong tài liệu),30
+156,IT4613,Hệ gợi ý,31
+157,IT4341,Hệ trợ giúp quyết định,31
+158,IT6340,(Không tìm thấy trong tài liệu),31
+159,IT6360,(Không tìm thấy trong tài liệu),31
+160,IT4342E,Computer Vision,32
+161,IT4235,Thị giác máy tính,32
+162,IT4343E,Computer Vision,32
+163,IT5409,Thị giác máy tính,32
+164,IT5413,Mô hình tạo sinh hình ảnh và video,32
+165,IT4409,Phát triển ứng dụng Web,33
+166,IT4409E,Web technologies and e- Services,33
+167,IT4552,Thực hành Lập trình Web,33
+168,IT4441,Giao diện và trải nghiệm người dùng,34
+169,IT4442,Giao diện người dùng,34
+170,IT4441E,User Interface and User Experience,34
+171,IT5441,Thiết kế UI/UX cho ô tô,34
+172,IT4490,Kỹ thuật phần mềm,35
+173,IT4549,Phát triển phần mềm theo chuẩn kỹ năng ITSS,35
+174,IT4549E,ITSS Software Development,35
+175,IT4945,Phát triển phần mềm theo chuẩn kỹ năng ITSS,35
+176,IT4945E,ITSS Software Development,35
+177,IT4536,Mẫu thiết kế phần mềm,35
+178,IT6819,(Không tìm thấy trong tài liệu),35
+179,IT4490BS,(Không tìm thấy trong tài liệu),35
+180,IT4501,Đảm bảo chất lượng Phần mềm,36
+181,IT6481,(Không tìm thấy trong tài liệu),36
+182,IT4501BS,(Không tìm thấy trong tài liệu),36
+183,IT6818,(Không tìm thấy trong tài liệu),36
+184,IT5440,Nguyên lý và kỹ thuật phân tích chương trình,36
+185,IT4593,Nhập môn kỹ thuật truyền thông,37
+186,IT4593E,Introduction to Communication Enginieering,37
+187,IT5310,Các công nghệ truyền thông cho IoT,37
+188,IT5452,Các công nghệ truyền thông trên ô tô,37
+189,IT4611,Các hệ thống phân tán và ứng dụng,38
+190,IT4612,Hệ phân tán,38
+191,IT4612E,Distributed System,38
+192,IT4614,Các hệ phân tán,38
+193,IT6575,(Không tìm thấy trong tài liệu),38
+194,IT4130E,(Không tìm thấy trong tài liệu),38
+195,IT5423,Huấn luyện song song phân tán,38
+196,IT5408,Tính toán hiệu năng cao,38
+197,IT5404,(Không tìm thấy trong tài liệu),38
+198,IT4611BS,(Không tìm thấy trong tài liệu),38
+199,IT4651,Thiết kế và triển khai mạng IP,39
+200,IT4651E,IP Network Design and Implementation,39
+201,IT4815,Quản trị mạng,39
+202,IT4653,Học sâu và ứng dụng,40
+203,IT3320E,Introduction to Deep Learning,40
+204,IT3190,Nhập môn Học máy và khai phá dữ liệu,40
+205,IT3190E,Học máy,40
+206,IT3191E,Machine Learning and Data Mining,40
+207,IT4242E,Machine Learning and Data Mining,40
+208,IT5410,Nền tảng AI tạo sinh,40
+209,IT5415,Học máy đa thể thức,40
+210,IT5416,Phát triển trí tuệ nhân tạo đáng tin cậy,40
+211,IT5414,Vận hành hệ thống học máy,40
+212,IT6328E,(Không tìm thấy trong tài liệu),40
+213,IT6428E,(Không tìm thấy trong tài liệu),40
+214,IT6011,(Không tìm thấy trong tài liệu),40
+215,IT4653BS,(Không tìm thấy trong tài liệu),40
+216,IT4681,Truyền thông đa phương tiện,41
+217,IT4682,Truyền thông đa phương tiện,41
+218,IT4682E,Multimedia Communication,41
+219,IT4621,Xử lý dữ liệu đa phương tiện,41
+220,IT4622,Mã hóa dữ liệu đa phương tiện,41
+221,IT4772,Xử lý ngôn ngữ tự nhiên,42
+222,IT4772E,Natural Language Processing,42
+223,IT4863,Tìm kiếm thông tin,42
+224,IT4868,Khai phá Web,42
+225,IT4868E,Web Mining,42
+226,IT5411,Truy vấn dữ liệu,42
+227,IT5412,Mô hình ngôn ngữ lớn,42
+228,IT5431,Xây dựng Chatbot và các hệ thống hỏi đáp với AI tạo sinh,42
+229,IT5426,Tác tử tự quản sử dụng mô hình ngôn ngữ lớn,42
+230,IT4335,Khai phá Web,42
+231,IT4863BS,(Không tìm thấy trong tài liệu),42
+232,IT4785,Phát triển ứng dụng cho thiết bị di động,43
+233,IT4785E,Mobile Programming,43
+234,IT5444,Automotive App Development,43
+235,IT5445,Hệ điều hành cho ô tô,43
+236,IT4885,Mô hình và thuật toán Internet phổ biến,44
+237,IT4931,Lưu trữ và xử lý dữ liệu lớn,45
+238,IT5384,Lưu trữ và phân tích dữ liệu lớn,45
+239,IT4043E,Big Data Storage and Processing,45
+240,IT5429,Lưu trữ và xử lý dữ liệu lớn (Dự đoán từ IT4931/IT5384),45
+241,IT5429E,(Không tìm thấy trong tài liệu),45
+242,IT4931BS,(Không tìm thấy trong tài liệu),45
+243,IT4735,IoT và ứng dụng,46
+244,IT4735E,IoT and Applications,46
+245,IT6130,(Không tìm thấy trong tài liệu),46
+246,IT4930,Nhập môn Khoa học dữ liệu,47
+247,IT4142E,Introduction to Data Science,47
+248,IT4788,Phát triển ứng dụng đa nền tảng,48
+249,IT5419,Tích hợp Hệ thống thông tin,49
+250,IT4350,Kiến trúc các hệ thống thông tin và ứng dụng,49
+251,IT5420,Tích hợp dữ liệu,50
+252,IT5427,AI tạo sinh trong thương mại điện tử và marketing số,50
+253,IT5427E,AI tạo sinh trong thương mại điện tử và marketing số (Dự đoán từ IT5427),50
+254,IT6390,(Không tìm thấy trong tài liệu),51
+255,IT5390,Web ngữ nghĩa,51
+256,IT6390E,(Không tìm thấy trong tài liệu),51
+257,IT4422,Phát triển Hệ thống phần mềm doanh nghiệp,52
+258,IT4431,Tin sinh học,53
+259,IT5428,"AI tạo sinh trong tin sinh học, y học và chăm sóc sức khỏe",53
+260,IT5438,AI tạo sinh trong thương mại điện tử và marketing số,53
+261,IT4429,Công nghệ nhận dạng và tổng hợp tiếng nói,54
+262,IT5424,Tạo sinh âm thanh,54
+263,IT4423,Các kỹ thuật định vị và ứng dụng,55
+264,IT4527,Blockchain và ứng dụng,56
+265,IT4527E,Blockchain và ứng dụng,56
+266,IT6016,(Không tìm thấy trong tài liệu),56
+267,IT4670,Đánh giá hiệu năng mạng,57
+268,IT5320,An toàn thông tin cho IoT,58
+269,IT6120,(Không tìm thấy trong tài liệu),58
+270,IT5449,An toàn thông tin cho ô tô,58
+271,IT6015,(Không tìm thấy trong tài liệu),58
+272,IT2022E,Thống kê ứng dụng và phân tích thực nghiệm,59
+273,IT2022,Thống kê ứng dụng và quy hoạch thực nghiệm,59
+274,IT5208,(Không tìm thấy trong tài liệu),59
+275,IT4023E,Data Visualization,60
+276,IT5425,Quản trị dữ liệu và trực quan hóa,60
+277,IT5425E,(Không tìm thấy trong tài liệu),60
+278,IT5315,(Không tìm thấy trong tài liệu),61
+279,IT4818,Phân tích nghiệp vụ thông minh,61
+280,IT4063,(Không tìm thấy trong tài liệu),61
+281,IT4063E,Introduction to Business Analytics,61
+282,IT5315E,(Không tìm thấy trong tài liệu),61
+283,IT3106E,Lập trình hệ thống,62
+284,IT4132E,(Không tìm thấy trong tài liệu),62
+285,IT4132,(Không tìm thấy trong tài liệu),62
+286,IT4403E,Phát triển ứng dụng Web an toàn,63
+287,IT4432E,Hệ thống xác thực sinh trắc học,64
+288,IT6024,(Không tìm thấy trong tài liệu),64
+289,IT4508E,An toàn phần mềm,65
+290,IT4630E,Phân tích mã độc,66
+291,IT4450E,Điều tra số,67
+292,IT6025,(Không tìm thấy trong tài liệu),67
+293,IT4413E,Kiểm thử xâm nhập,68
+294,IT6023,(Không tìm thấy trong tài liệu),68
+295,IT5305E,(Không tìm thấy trong tài liệu),69
+296,IT6017,(Không tìm thấy trong tài liệu),70
+297,IT6018,(Không tìm thấy trong tài liệu),71
+298,IT6021,(Không tìm thấy trong tài liệu),72

@@ -1,5 +1,5 @@
-import { IsInt, IsOptional, IsObject, ValidatorConstraint, ValidatorConstraintInterface, Validate } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsInt, IsOptional, IsObject, IsBoolean, ValidatorConstraint, ValidatorConstraintInterface, Validate } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 @ValidatorConstraint({ name: 'evaluationPoints', async: false })
@@ -91,4 +91,10 @@ export class EvaluationMyQueryDto {
   @Type(() => Number)
   @IsInt()
   periodId?: number;
+
+  @ApiPropertyOptional({ example: false, description: 'Admin only: reveal reviewer identity even in anonymous periods' })
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  showReviewer?: boolean;
 }

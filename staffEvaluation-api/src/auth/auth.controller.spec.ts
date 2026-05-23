@@ -4,6 +4,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { MicrosoftOAuthService } from './microsoft-oauth.service';
+import { HustAuthService } from './hust-auth.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 describe('AuthController', () => {
@@ -27,6 +28,13 @@ describe('AuthController', () => {
     findOrCreateUser: jest.fn(),
     storeOneTimeCode: jest.fn(),
     consumeOneTimeCode: jest.fn(),
+  };
+
+  const mockHustAuthService = {
+    login: jest.fn(),
+    verifyCredentials: jest.fn(),
+    validateHustDomain: jest.fn(),
+    findOrCreateUser: jest.fn(),
   };
 
   const mockConfigService = {
@@ -55,6 +63,10 @@ describe('AuthController', () => {
         {
           provide: MicrosoftOAuthService,
           useValue: mockMicrosoftOAuthService,
+        },
+        {
+          provide: HustAuthService,
+          useValue: mockHustAuthService,
         },
         {
           provide: ConfigService,
@@ -210,6 +222,32 @@ describe('AuthController', () => {
 
       expect(result.accessToken).toBe('refreshed-token');
       expect(result.user.id).toBe('user-123');
+    });
+  });
+
+  describe('hustLogin', () => {
+    it('should login with valid HUST credentials', async () => {
+      const hustLoginDto = { email: 'user@sis.hust.edu.vn', password: 'hustpass' };
+      const mockUser = { id: 'user-1', email: 'user@sis.hust.edu.vn', profile: null, roles: [{ role: 'user' }] };
+      const mockTokenResponse = { accessToken: 'at', refreshToken: 'rt', expiresIn: 900, user: { id: 'user-1' } };
+
+      mockHustAuthService.login.mockResolvedValue(mockUser);
+      mockAuthService.generateTokenResponse.mockReturnValue(mockTokenResponse);
+
+      const result = await controller.hustLogin(hustLoginDto);
+
+      expect(mockHustAuthService.login).toHaveBeenCalledWith('user@sis.hust.edu.vn', 'hustpass');
+      expect(mockAuthService.generateTokenResponse).toHaveBeenCalledWith(mockUser);
+      expect(result).toEqual(mockTokenResponse);
+    });
+
+    it('should propagate UnauthorizedException from HustAuthService', async () => {
+      const hustLoginDto = { email: 'user@gmail.com', password: 'pass' };
+      mockHustAuthService.login.mockRejectedValue(
+        new UnauthorizedException('Vui lòng sử dụng email HUST'),
+      );
+
+      await expect(controller.hustLogin(hustLoginDto)).rejects.toThrow(UnauthorizedException);
     });
   });
 

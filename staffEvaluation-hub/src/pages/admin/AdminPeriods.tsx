@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, Loader2, Calendar } from 'lucide-react';
 
@@ -31,6 +32,7 @@ export default function AdminPeriods() {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [status, setStatus] = useState<string>('draft');
+    const [isAnonymous, setIsAnonymous] = useState(false);
 
     const resetForm = () => {
         setName('');
@@ -38,6 +40,7 @@ export default function AdminPeriods() {
         setStartDate('');
         setEndDate('');
         setStatus('draft');
+        setIsAnonymous(false);
         setEditingPeriod(null);
     };
 
@@ -48,6 +51,7 @@ export default function AdminPeriods() {
         setStartDate(p.startDate.split('T')[0]);
         setEndDate(p.endDate.split('T')[0]);
         setStatus(p.status);
+        setIsAnonymous(p.isAnonymous);
         setIsDialogOpen(true);
     };
 
@@ -67,6 +71,7 @@ export default function AdminPeriods() {
                     startDate: new Date(startDate).toISOString(),
                     endDate: new Date(endDate).toISOString(),
                     status,
+                    isAnonymous,
                 });
                 toast.success('Cập nhật đợt đánh giá thành công!');
             } else {
@@ -75,6 +80,7 @@ export default function AdminPeriods() {
                     description: description || null,
                     startDate: new Date(startDate).toISOString(),
                     endDate: new Date(endDate).toISOString(),
+                    isAnonymous,
                 });
                 toast.success('Thêm đợt đánh giá thành công!');
             }
@@ -184,6 +190,21 @@ export default function AdminPeriods() {
                                             />
                                         </div>
                                     </div>
+                                    <div className="flex items-center justify-between rounded-lg border p-3">
+                                        <div className="space-y-0.5">
+                                            <Label htmlFor="isAnonymous" className="text-sm font-medium cursor-pointer">
+                                                Đánh giá ẩn danh
+                                            </Label>
+                                            <p className="text-xs text-muted-foreground">
+                                                Ẩn danh tính người chấm khỏi kết quả của giảng viên
+                                            </p>
+                                        </div>
+                                        <Switch
+                                            id="isAnonymous"
+                                            checked={isAnonymous}
+                                            onCheckedChange={setIsAnonymous}
+                                        />
+                                    </div>
                                     {editingPeriod && (
                                         <div className="space-y-2">
                                             <Label>Trạng thái</Label>
@@ -218,6 +239,7 @@ export default function AdminPeriods() {
                                     <TableHead>Mô tả</TableHead>
                                     <TableHead className="text-center">Ngày bắt đầu</TableHead>
                                     <TableHead className="text-center">Ngày kết thúc</TableHead>
+                                    <TableHead className="text-center">Ẩn danh</TableHead>
                                     <TableHead className="text-center">Trạng thái</TableHead>
                                     <TableHead className="text-right">Thao tác</TableHead>
                                 </TableRow>
@@ -225,7 +247,7 @@ export default function AdminPeriods() {
                             <TableBody>
                                 {periods?.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                                             Chưa có đợt đánh giá nào
                                         </TableCell>
                                     </TableRow>
@@ -244,6 +266,13 @@ export default function AdminPeriods() {
                                             </TableCell>
                                             <TableCell className="text-center text-sm">
                                                 {new Date(p.endDate).toLocaleDateString('vi-VN')}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                {p.isAnonymous ? (
+                                                    <Badge variant="secondary">Ẩn danh</Badge>
+                                                ) : (
+                                                    <span className="text-muted-foreground text-sm">—</span>
+                                                )}
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 <Select

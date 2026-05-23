@@ -58,7 +58,7 @@ export default function AdminCharts() {
       const staffCount = new Set(groupEvals.map(e => e.evaluateeid)).size;
 
       return {
-        name: group.name.length > 12 ? group.name.slice(0, 12) + '...' : group.name,
+        name: group.name,
         fullName: group.name,
         avgScore: Number(avgScore.toFixed(2)),
         evalCount: groupEvals.length,
@@ -222,15 +222,16 @@ export default function AdminCharts() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ChartContainer config={chartConfig} className="h-[350px] w-full">
-                  <BarChart data={groupChartData} margin={{ top: 20, right: 30, left: 20, bottom: 80 }}>
+                <ChartContainer config={chartConfig} className="h-[450px] w-full">
+                  <BarChart data={groupChartData} margin={{ top: 20, right: 30, left: 20, bottom: 120 }}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                     <XAxis
                       dataKey="name"
-                      angle={-45}
+                      angle={-35}
                       textAnchor="end"
-                      height={80}
-                      tick={{ fontSize: 12 }}
+                      height={120}
+                      interval={0}
+                      tick={{ fontSize: 11 }}
                       className="fill-foreground"
                     />
                     <YAxis domain={[0, 4]} tick={{ fontSize: 12 }} className="fill-foreground" />
@@ -270,16 +271,16 @@ export default function AdminCharts() {
                   <CardDescription>Tỷ lệ số lượng đánh giá của từng nhóm</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                  <ChartContainer config={chartConfig} className="h-[350px] w-full">
                     <PieChart>
                       <Pie
                         data={pieChartData}
                         cx="50%"
                         cy="50%"
-                        labelLine={false}
-                        outerRadius={100}
+                        labelLine={true}
+                        outerRadius={80}
                         dataKey="value"
-                        label={({ name, percent }) => `${name.slice(0, 10)}${name.length > 10 ? '...' : ''} (${(percent * 100).toFixed(0)}%)`}
+                        label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                       />
                       <ChartTooltip
                         content={

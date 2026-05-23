@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MicrosoftOAuthService } from './microsoft-oauth.service';
+import { HustAuthService } from './hust-auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 
@@ -29,7 +30,7 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, MicrosoftOAuthService, JwtStrategy, RefreshTokenStrategy],
+  providers: [AuthService, MicrosoftOAuthService, HustAuthService, JwtStrategy, RefreshTokenStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

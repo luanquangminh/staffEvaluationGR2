@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
@@ -11,6 +12,7 @@ import { EvaluationsModule } from './evaluations/evaluations.module';
 import { OrganizationUnitsModule } from './organization-units/organization-units.module';
 import { UsersModule } from './users/users.module';
 import { EvaluationPeriodsModule } from './evaluation-periods/evaluation-periods.module';
+import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { HealthModule } from './health/health.module';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { validateEnv } from './config/env.validation';
@@ -24,6 +26,7 @@ import { validateEnv } from './config/env.validation';
         return config;
       },
     }),
+    ...(process.env.NODE_ENV !== 'test' ? [ScheduleModule.forRoot()] : []),
     ThrottlerModule.forRoot({
       // Skip throttling in tests — real-DB / fast-iteration suites should not
       // hit rate limits. Production behavior is unchanged.
@@ -53,6 +56,7 @@ import { validateEnv } from './config/env.validation';
     QuestionsModule,
     EvaluationsModule,
     EvaluationPeriodsModule,
+    RolePermissionsModule,
     OrganizationUnitsModule,
     UsersModule,
     HealthModule,

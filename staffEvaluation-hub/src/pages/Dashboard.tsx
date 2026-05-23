@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
-import { useMyGroups, useActivePeriods, useStaff, useQuestions, Evaluation, Staff2Group, Staff } from '@/hooks/useStaff';
+import { useMyGroups, useActivePeriods, useStaff, useActiveQuestions, Evaluation, Staff2Group, Staff } from '@/hooks/useStaff';
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { useQuery, useQueries } from '@tanstack/react-query';
@@ -23,7 +23,7 @@ export default function Dashboard() {
     enabled: canViewStaff2Groups,
   });
   const { data: allStaff } = useStaff();
-  const { data: questions } = useQuestions();
+  const { data: questions } = useActiveQuestions();
 
   const activePeriod = activePeriods?.[0] ?? null;
 

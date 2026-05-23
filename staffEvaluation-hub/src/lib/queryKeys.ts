@@ -4,6 +4,7 @@ export const queryKeys = {
   groups: ['groups'] as const,
   staff2groups: ['staff2groups'] as const,
   questions: ['questions'] as const,
+  activeQuestions: ['questions-active'] as const,
   activePeriods: ['evaluation-periods-active'] as const,
   allPeriods: ['evaluation-periods-all'] as const,
   myGroups: (staffId: number | null) => ['myGroups', staffId] as const,
@@ -16,6 +17,7 @@ export const queryKeys = {
   allEvaluations: (periodId: number | null) => ['allEvaluations', periodId] as const,
   staffReceivedEvaluations: (staffId: number | null, periodId: number | null) => ['staffReceivedEvaluations', staffId, periodId] as const,
   usersRoles: ['users-roles'] as const,
+  rolePermissions: ['role-permissions'] as const,
   myProgress: ['my-progress'] as const,
   pendingEvaluations: ['pending-evaluations'] as const,
 } as const;

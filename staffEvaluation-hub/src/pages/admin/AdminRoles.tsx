@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,8 +8,29 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Shield, Loader2, UserPlus, Trash2 } from 'lucide-react';
+import { Shield, Loader2, UserPlus, Trash2, BarChart3 } from 'lucide-react';
+
+type ResultsAccess = 'none' | 'self' | 'group' | 'all';
+
+interface RolePermission {
+  role: string;
+  resultsAccess: ResultsAccess;
+}
+
+const ACCESS_OPTIONS: { value: ResultsAccess; label: string; description: string }[] = [
+  { value: 'none',  label: 'Không xem được',                description: 'Không thể truy cập trang kết quả' },
+  { value: 'self',  label: 'Chỉ kết quả của mình',          description: 'Chỉ xem điểm mà bản thân nhận được' },
+  { value: 'group', label: 'Kết quả thành viên trong nhóm', description: 'Xem kết quả của mọi người trong cùng nhóm' },
+  { value: 'all',   label: 'Xem được tất cả',               description: 'Xem kết quả của toàn bộ giảng viên' },
+];
+
+const ROLE_LABELS: Record<string, string> = {
+  moderator: 'Moderator',
+  user: 'User (Giảng viên)',
+};
 
 interface UserWithRoles {
   id: string;
@@ -31,6 +52,26 @@ export default function AdminRoles() {
     queryKey: queryKeys.usersRoles,
     queryFn: () => api.get<UserWithRoles[]>('/users/roles'),
   });
+
+  const { data: rolePermissions = [] } = useQuery({
+    queryKey: queryKeys.rolePermissions,
+    queryFn: () => api.get<RolePermission[]>('/role-permissions'),
+  });
+
+  const permMutation = useMutation({
+    mutationFn: ({ role, resultsAccess }: { role: string; resultsAccess: ResultsAccess }) =>
+      api.patch(`/role-permissions/${role}`, { resultsAccess }),
+    onSuccess: (_, { role, resultsAccess }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.rolePermissions });
+      const label = ACCESS_OPTIONS.find(o => o.value === resultsAccess)?.label ?? resultsAccess;
+      toast.success(`Đã cập nhật quyền cho ${ROLE_LABELS[role] ?? role}: ${label}`);
+    },
+    onError: () => {
+      toast.error('Cập nhật quyền thất bại. Vui lòng thử lại.');
+    },
+  });
+
+  const permissionsMap = new Map(rolePermissions.map(p => [p.role, p.resultsAccess]));
 
   const handleAddRole = async () => {
     if (!selectedUserId) return;
@@ -151,6 +192,79 @@ export default function AdminRoles() {
               </TableBody>
             </Table>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* ─── Role-level Permission Config ─── */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Phân quyền xem kết quả
+          </CardTitle>
+          <CardDescription>
+            Cấu hình quyền truy cập trang kết quả (/admin/results) theo từng vai trò.
+            Thay đổi áp dụng ngay lập tức.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-52">Vai trò</TableHead>
+                  <TableHead>Quyền xem kết quả</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(['moderator', 'user'] as const).map(role => {
+                  const current = permissionsMap.get(role) ?? 'none';
+                  return (
+                    <TableRow key={role}>
+                      <TableCell className="align-top pt-4">
+                        <div className="space-y-1">
+                          <p className="font-medium">{ROLE_LABELS[role]}</p>
+                          <Badge variant="outline" className="text-xs font-mono">{role}</Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <RadioGroup
+                          value={current}
+                          onValueChange={(value) =>
+                            permMutation.mutate({ role, resultsAccess: value as ResultsAccess })
+                          }
+                          className="space-y-2 py-2"
+                        >
+                          {ACCESS_OPTIONS.map(option => (
+                            <div key={option.value} className="flex items-start gap-3">
+                              <RadioGroupItem
+                                value={option.value}
+                                id={`${role}-${option.value}`}
+                                className="mt-0.5"
+                                disabled={permMutation.isPending}
+                              />
+                              <Label
+                                htmlFor={`${role}-${option.value}`}
+                                className="cursor-pointer"
+                              >
+                                <span className="font-medium">{option.label}</span>
+                                <p className="text-xs text-muted-foreground">
+                                  {option.description}
+                                </p>
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Role <span className="font-mono">admin</span> luôn xem được tất cả và không thể thay đổi.
+          </p>
         </CardContent>
       </Card>
 

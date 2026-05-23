@@ -1,0 +1,153 @@
+﻿Id,Name,FirstName,EmailH,EmailS,StaffCode,Mobile,AcademicDegree,OrganizationUnitId
+3,Ngô Lam Trung,Trung,trung.ngolam@hust.edu.vn,trungnl@soict.hust.edu.vn,002.005.00042,0968395999,Tiến sỹ,2
+4,Phạm Ngọc Hưng,Hưng,hung.phamngoc1@hust.edu.vn,hungpn@soict.hust.edu.vn,002.005.00072,0985410656,Tiến sỹ,2
+5,Vũ Đức Vượng,Vượng,,,,0984753061,,128
+6,Ban Hà Bằng,Bằng,bang.banha@hust.edu.vn,bangbh@soict.hust.edu.vn,002.2012.0021,0985819467,Tiến sỹ,1
+7,Nguyễn Duy Hiệp,Hiệp,hiep.nguyenduy@hust.edu.vn,,002.005.00081,0906167269,Thạc sĩ,1
+8,Nguyễn Thị Thu Hương,Hương,huong.nguyenthithu@hust.edu.vn,huongnt@soict.hust.edu.vn,002.005.00338,0903253796,Tiến sỹ,1
+9,Nguyễn Hồng Phương,Phương,phuong.nguyenhong@hust.edu.vn,phuongnh@soict.hust.edu.vn,002.005.00055,0912552709,Thạc sĩ,1
+10,Trịnh Anh Phúc,Phúc,phuc.trinhanh@hust.edu.vn,phucta@soict.hust.edu.vn,002.2012.0064,0942227941,Tiến sỹ,1
+11,Bùi Trọng Tùng,Tùng,tung.buitrong@hust.edu.vn,tungbt@soict.hust.edu.vn,002.005.00074,0828238649,Thạc sĩ,2
+12,Đỗ Tuấn Anh,Anh,anh.dotuan@hust.edu.vn,,002.005.00048,0989095167,Thạc sĩ,1
+13,Trần Nguyên Ngọc,Ngọc,ngoc.trannguyen@hust.edu.vn,NgocTN@soict.hust.edu.vn,002.005.00073,0981761920,Tiến sỹ,2
+14,Nguyễn Đức Tiến,Tiến,tien.nguyenduc@hust.edu.vn,tiennd@soict.hust.edu.vn,002.005.00102,0913137399,Thạc sĩ,2
+15,Vũ Văn Thiệu,Thiệu,thieu.vuvan@hust.edu.vn,thieuvv@soict.hust.edu.vn,002.2012.0079,0982928307,Tiến sỹ,1
+16,Hoàng Văn Hiệp,Hiệp,hiep.hoangvan@hust.edu.vn,hiephv@soict.hust.edu.vn,002.005.00070,0944840301,Tiến sỹ,2
+17,Nguyễn Quốc Tuấn,Tuấn,tuan.nguyenquoc@hust.edu.vn,,,0397775933,Tiến sỹ,1
+18,Tạ Duy Hoàng,Hoàng,hoang.taduy@hust.edu.vn,,,0878507175,Tiến sỹ,1
+19,Nguyễn Văn Sơn,Sơn,son.nguyenvan@hust.edu.vn,,,0987946797,,1
+20,Đàm Quang Tuấn,Tuấn,tuan.damquang@hust.edu.vn,,,0966581455,Tiến sỹ,1
+21,Trần Thị Dung,Dung,dung.tranthi@hust.edu.vn,dungtt@soict.hust.edu.vn,002.005.00077,0989161528,Thạc sĩ,0
+22,Nhữ Thị Nga,Nga,nga.nhuthi@hust.edu.vn,ngant@soict.hust.edu.vn,002.005.00025,0982524487,Thạc sĩ,0
+23,Phạm Thị Phương Giang,Giang,giang.phamthiphuong@hust.edu.vn,giangptp@soict.hust.edu.vn,002.005.00085,0988181512,Thạc sĩ,0
+24,Phạm Thanh Liêm,Liêm,liem.phamthanh@hust.edu.vn,liempt@soict.hust.edu.vn,002.005.00026,0912151204,Thạc sĩ,0
+25,Lê Thị Hoa,Hoa,hoa.lethi@hust.edu.vn,hoalt@soict.hust.edu.vn,002.005.00078,0915229959,Thạc sĩ,0
+26,Nguyễn Văn Hiên,Hiên,hien.nguyenvan1@hust.edu.vn,hiennv@soict.hust.edu.vn,002.2022.0020,0356095140,Tiến sỹ,0
+27,Nguyễn An Hưng,Hưng,hung.nguyenan@hust.edu.vn,hungna@soict.hust.edu.vn,002.2012.0072,0972794554,Tiến sỹ,0
+28,Lê Huy Cường,Cường,cuong.lehuy@hust.edu.vn,cuonglh@soict.hust.edu.vn,002.005.00022,0912265004,Thạc sĩ,0
+29,Nguyễn Duy Tùng,Tùng,tung.nguyenduy@hust.edu.vn,tungnd@soict.hust.edu.vn,,0931436286,,1
+30,Trần Thị Lan Anh,Anh,anh.tranthilan@hust.edu.vn,,002.2024.0063,0865570358,,1
+31,Mai Xuân Ngọc,Ngọc,ngoc.maixuan@hust.edu.vn,NgocMX@soict.hust.edu.vn,002.2024.0067,0378526837,,2
+32,Phạm Mạnh Tuấn,Tuấn,tuan.phammanh@hust.edu.vn,tuanPM@soict.hust.edu.vn,002.2024.0068,0982208931,,2
+33,Nguyễn Minh Quân,Quân,quan.nguyenminh1@hust.edu.vn,QuanNM@soict.hust.edu.vn,002.2024.0069,0353150172,,2
+34,Nguyễn Hoàng Long,Long,long.nguyenhoang@hust.edu.vn,LongNH@soict.hust.edu.vn,002.2024.0066,0915381970,,2
+35,Dương Hữu Huynh,Huynh,huynh.duownghuu@hust.edu.vn,huynhdh@soict.hust.edu.vn,002.2025.0051,0344830521,,2
+36,Phạm Quang Hiếu,Hiếu,hieu.phamquang@hust.edu.vn,,,0388273219,,0
+37,Phạm Đăng Hải,Hải,hai.phamdang@hust.edu.vn,haipd@soict.hust.edu.vn,002.005.00339,0913537715,Tiến sỹ,1
+38,Nguyễn Bá Ngọc,Ngọc,ngoc.nguyenba@hust.edu.vn,,002.2013.0016,0975202268,Tiến sỹ,1
+39,Đoàn Phong Tùng,Tùng,tung.doanphong@hust.edu.vn,tungdp@soict.hust.edu.vn,002.2021.0030,0814870817,Tiến sỹ,2
+40,Phạm Quang Dũng,Dũng,dung.phamquang@hust.edu.vn,dungpq@soict.hust.edu.vn,002.005.00037,0947732280,Tiến sỹ,1
+41,Bùi Trọng Đức,Đức,duc.buitrong@hust.edu.vn,,002.2024.0064,0356910806,,1
+42,Hồ Viết Đức Lương,Lương,luong.hovietduc@hust.edu.vn,,002.2024.0065,0853788995,,1
+43,Trần Đức Duy,Duy,duy.tranduc@hust.edu.vn,,,0837198139,,1
+44,Nguyễn Minh Huyền,Huyền,huyen.nguyenminh@hust.edu.vn,,,0835996812,,1
+45,Đinh Viết Sang,Sang,sang.dinhviet@hust.edu.vn,sangdv@soict.hust.edu.vn,002.2014.0016,0964131714,Tiến sỹ,1
+46,Đinh Thị Hà Ly,Ly,ly.dinhthiha@hust.edu.vn,lydth@soict.hust.edu.vn,002.2022.0026,0972001326,Tiến sỹ,2
+47,Lê Đức Hậu,Hậu,hau.leduc@hust.edu.vn,hauld@soict.hust.edu.vn,,0912324564,,1
+48,Lê Thanh Hương,Hương,huong.lethanh@hust.edu.vn,huonglt@soict.hust.edu.vn,002.005.00352,0904674102,Tiến sỹ,1
+49,Tạ Hải Tùng,Tùng,tung.tahai@hust.edu.vn,tungth@soict.hust.edu.vn,002.005.00034,0904509467,Tiến sỹ,2
+50,Nguyễn Kim Khánh,Khánh,khanh.nguyenkim@hust.edu.vn,khanhnk@soict.hust.edu.vn,002.005.00369,0913585533,Tiến sỹ,128
+51,Nguyễn Linh Giang,Giang,giang.nguyenlinh@hust.edu.vn,giangnl@soict.hust.edu.vn,002.005.00363,0912725672,Tiến sỹ,2
+52,Tống Văn Vạn,Vạn,van.tongvan@hust.edu.vn,vantv@soict.hust.edu.vn,002.2022.0021,0964262425,Tiến sỹ,2
+53,Đỗ Bá Lâm,Lâm,lam.doba@hust.edu.vn,lamdb@soict.hust.edu.vn,002.005.00075,0964666475,Tiến sỹ,1
+54,Lê Đức Trung,Trung,trung.leduc@hust.edu.vn,trungld@soict.hust.edu.vn,002.005.00008,0903215581,Thạc sĩ,1
+55,Trịnh Văn Loan,Loan,loan.trinhvan@hust.edu.vn,loantv@soict.hust.edu.vn,002.005.00371,0903277732,Tiến sỹ,128
+56,Nguyễn Khanh Văn,Văn,van.nguyenkhanh@hust.edu.vn,vannk@soict.hust.edu.vn,002.005.00358,0904855316,Tiến sỹ,1
+57,Trịnh Văn Chiến,Chiến,chien.trinhvan@hust.edu.vn,chientv@soict.hust.edu.vn,002.2020.0025,0854690917,Tiến sỹ,2
+58,Dương Quang Huy,Huy,huy.duongquang@hust.edu.vn,,,,,1
+59,Nguyễn Hữu Đức,Đức,duc.nguyenhuu@hust.edu.vn,ducnh@soict.hust.edu.vn,002.005.00394,0975651915,Tiến sỹ,1
+60,Nguyễn Đức Anh,Anh,,anhnd@soict.hust.edu.vn,,0866588150,,1
+61,Nguyễn Khánh Phương,Phương,phuong.nguyenkhanh@hust.edu.vn,,002.005.00051,0941471023,Tiến sỹ,1
+62,Nguyễn Tuấn Dũng,Dũng,dung.nguyentuan@hust.edu.vn,,002.005.00100,0988599150,Tiến sỹ,1
+63,Bùi Quốc Trung,Trung,trung.buiquoc@hust.edu.vn,trungbq@soict.hust.edu.vn,002.20200015,0946043316,Tiến sỹ,1
+64,Huỳnh Thị Thanh Bình,Bình,binh.huynhthithanh@hust.edu.vn,binhht@soict.hust.edu.vn,002.005.00397,0903226786,Tiến sỹ,1
+65,Nguyễn Kiêm Hiếu,Hiếu,hieu.nguyenkiem@hust.edu.vn,hieunk@soict.hust.edu.vn,002.2015.0020,0964596784,Tiến sỹ,1
+66,Nguyễn Bình Minh,Minh,minh.nguyenbinh@hust.edu.vn,minhnb@soict.hust.edu.vn,002.2014.0012,0967995584,Tiến sỹ,1
+67,Cao Tuấn Dũng,Dũng,dung.caotuan@hust.edu.vn,dungct@soict.hust.edu.vn,002.005.00029,0983359425,Tiến sỹ,1
+68,Ngô Văn Linh,Linh,linh.ngovan@hust.edu.vn,,002.005.00105,0393055388,Thạc sĩ,1
+69,Lã Thế Vinh,Vinh,vinh.lathe@hust.edu.vn,vinhlt@soict.hust.edu.vn,002.005.00043,0985290681,Tiến sỹ,2
+70,Nguyễn Hồng Quang,Quang,quang.nguyenhong@hust.edu.vn,quangnh@soict.hust.edu.vn,002.005.00019,0978813688,Tiến sỹ,2
+71,Nguyễn Tiến Thành,Thành,thanh.nguyentien2@hust.edu.vn,,002.005.00069,0987768886,Thạc sĩ,1
+72,Trần Văn Đặng,Đặng,,dangtv@soict.hust.edu.vn,,0948181948,,1
+73,Trần Vĩnh Đức,Đức,duc.tranvinh@hust.edu.vn,ductv@soict.hust.edu.vn,002.2012.0065,0828232275,Tiến sỹ,1
+74,Bùi Thị Mai Anh,Anh,anh.buithimai@hust.edu.vn,anhbtm@soict.hust.edu.vn,2017.04.00003,0976707772,Tiến sỹ,1
+75,Trịnh Tuấn Đạt,Đạt,dat.trinhtuan@hust.edu.vn,dattt@soict.hust.edu.vn,002.005.00095,0392990092,Tiến sỹ,1
+76,Nguyễn Mạnh Tuấn,Tuấn,tuan.nguyenmanh@hust.edu.vn,tuannm@soict.hust.edu.vn,002.005.00080,0904681984,Thạc sĩ,1
+77,Trịnh Thành Trung,Trung,trung.trinhthanh@hust.edu.vn,trungtt@soict.hust.edu.vn,002.2013.0018,0773321666,Thạc sĩ,1
+78,Michel Toulouse,Michel,,,,,,
+79,Nguyễn Thanh Hùng,Hùng,hung.nguyenthanh2@hust.edu.vn,hungnt@soict.hust.edu.vn,002.2012.0063,0938669118,Tiến sỹ,1
+80,Phạm Huy Hoàng,Hoàng,hoang.phamhuy@hust.edu.vn,HoangPH@soict.hust.edu.vn,002.005.00007,0919742368,Tiến sỹ,2
+81,Nguyễn Đức Toàn,Toàn,toan.nguyenduc1@hust.edu.vn,toannd@soict.hust.edu.vn,002.035.00057,0969208565,Tiến sỹ,2
+82,Trương Thị Diệu Linh,Linh,linh.truongthidieu@hust.edu.vn,LinhTD@soict.hust.edu.vn,002.005.00016,0949455961,Tiến sỹ,2
+83,Trần Hải Anh,Anh,anh.tranhai@hust.edu.vn,anhth@soict.hust.edu.vn,002.2013.0037,0915825046,Tiến sỹ,2
+84,Ngô Quỳnh Thu,Thu,thu.ngoquynh@hust.edu.vn,ThuNQ@soict.hust.edu.vn,002.004.00074,0912528824,Tiến sỹ,2
+85,Bành Thị Quỳnh Mai,Mai,mai.banhthiquynh@hust.edu.vn,maibtq@soict.hust.edu.vn,002.005.00049,0912640079,Thạc sĩ,2
+86,Trần Đình Kiến Giang,Giang,giang.trandinhkien@hust.edu.vn,giangtdk@soict.hust.edu.vn,002.2024.0037,0852467787,,2
+87,Vũ Tuyết Trinh,Trinh,trinh.vutuyet@hust.edu.vn,,002.005.00030,0983371753,Tiến sỹ,1
+88,Nguyễn Thị Kim Anh,Anh,anh.nguyenthikim@hust.edu.vn,anntk@soict.hust.edu.vn,002.005.00347,0978871955,Tiến sỹ,1
+89,Trần Đình Khang,Khang,khang.trandinh@hust.edu.vn,,002.005.00004,0968184555,Tiến sỹ,1
+90,Phạm Văn Hải,Hải,hai.phamvan@hust.edu.vn,haipv@soict.hust.edu.vn,002.2013.0028,0823727555,Tiến sỹ,1
+91,Lê Tấn Hùng,Hùng,hung.letan@hust.edu.vn,hunglt@soict.hust.edu.vn,002.005.00373,0913030731,Thạc sĩ,1
+92,Nguyễn Thị Oanh,Oanh,oanh.nguyenthi@hust.edu.vn,oanhnt@soict.hust.edu.vn,002.005.00097,943206566,Tiến sỹ,1
+93,Thân Quang Khoát,Khoát,khoat.thanquang@hust.edu.vn,khoattq@soict.hust.edu.vn,002.2014.0014,0915418800,Tiến sỹ,1
+94,Đỗ Tiến Dũng,Dũng,dung.dotien@hust.edu.vn,dungdt@soict.hust.edu.vn,002.2021.0029,0919790797,Tiến sỹ,2
+95,Nguyễn Phi Lê,Lê,le.nguyenphi@hust.edu.vn,lenp@soict.hust.edu.vn,002.005.00101,0865488436,Tiến sỹ,1
+96,Vũ Thị Hương Giang,Giang,giang.vuthihuong@hust.edu.vn,,002.005.00017,0766016898,Tiến sỹ,1
+97,Nguyễn Nhất Hải,Hải,hai.nguyennhat@hust.edu.vn,hainn@soict.hust.edu.vn,002.2017.0008,0914727982,Tiến sỹ,1
+98,Trần Nhật Hóa,Hóa,hoa.trannhat@hust.edu.vn,,002.2020.0019,0969000610,Tiến sỹ,1
+99,Huỳnh Quyết Thắng,Thắng,thang.huynhquyet@hust.edu.vn,,002.005.00398,0913536752,Tiến sỹ,1
+100,Kimura Ryo,,,,,,,
+101,Nguyễn Thị Hằng,Hằng,,,,,,
+102,Đỗ Công Thuần,Thuần,thuan.docong@hust.edu.vn,thuandc@soict.hust.edu.vn,002.2020.0014,0975458126,Tiến sỹ,2
+103,Lê Xuân Thành,Thành,thanh.lexuan@hust.edu.vn,thanhlx@soict.hust.edu.vn,002.035.00072,0911650535,Tiến sỹ,2
+104,Ngô Thành Trung,Trung,trung.ngothanh@hust.edu.vn,TrungNTH@soict.hust.edu.vn,002.2022.0027,0963197621,Tiến sỹ,2
+105,Trần Quang Đức,Đức,duc.tranquang@hust.edu.vn,DucTQ@soict.hust.edu.vn,002.005.00079,0942481255,Tiến sỹ,2
+106,Đặng Tuấn Linh,Linh,linh.dangtuan@hust.edu.vn,linhdt@soict.hust.edu.vn,002.2018.0004,0932538815,Tiến sỹ,2
+107,Trần Hoàng Hải,Hải,hai.tranhoang@hust.edu.vn,haith@soict.hust.edu.vn,002.013.00012,0983020981,Tiến sỹ,2
+108,Nguyễn Quốc Khánh,Khánh,khanh.nguyenquoc@hust.edu.vn,khanhnq@soict.hust.edu.vn,002.2023.0046,0399589889,,2
+109,Lê Văn Đồng,Đồng,dong.levan@hust.edu.vn,donglv@soict.hust.edu.vn,002.2025.0050,0354389368,,2
+110,Hoàng Việt Dũng,Dũng,dung.hoangviet@hust.edu.vn,dunghv@soict.hust.edu.vn,002.2024.0038,0984288095,,2
+111,Nguyễn Thị Thu Trang,Trang,trang.nguyenthithu@hust.edu.vn,trangntt@soict.hust.edu.vn,002.005.00060,0988088210,Tiến sỹ,1
+112,Tưởng Văn Đạt,Đạt,dat.tuongvan@hust.edu.vn,dattv@soict.hust.edu.vn,002.2025.0082,0985538241,,2
+113,Nguyễn Hùng Sơn,Sơn,,,,,,
+114,Nguyễn Thị Thanh Nga,Nga,nga.nguyenthithanh@hust.edu.vn,ngantt@soict.hust.edu.vn,002.005.00096,0904567424,Tiến sỹ,2
+115,Đàm Mạnh Đạt,Đạt,,datdm@soict.hust.edu.vn,,0985650285; 0337567499,,0
+116,Đinh Thị Thu Hương,Hương,,huongdtt@soict.hust.edu.vn,,0979259656,,0
+117,Đỗ Quốc Huy,Huy,,huydq@soict.hust.edu.vn,,0936356172,,1
+118,Lê Bá Vui,Vui,Vui.LeBa@hust.edu.vn,vuilb@soict.hust.edu.vn,002.005.00068,0937808435,Thạc sĩ,2
+119,Lê Hạnh Nguyên,Nguyên,,nguyenlh@soict.hust.edu.vn,,0961567998,,0
+120,Lê Thu Giang,Giang,,gianglt@soict.hust.edu.vn,,0935966661,,0
+121,Nguyễn Đình Thuận,Thuận,thuan.nguyendinh@hust.edu.vn,thuannd@soict.hust.edu.vn,002.2013.0017,0966614396,,2
+122,Nguyễn Thị Hà Phương,Phương,,phuongnth@soict.hust.edu.vn,,0973552010,,0
+123,Phạm Duy Đạt,Đạt,,datpd@soict.hust.edu.vn,,0906497212,,0
+125,Trần Việt Trung,Trung,,trungtv@soict.hust.edu.vn,,0985062706,,1
+126,Trương Thị Vân Thu,Thu,,thuttv@soict.hust.edu.vn,,0916076076,,0
+127,Hồ Tú Bảo,Bảo,,,,0977855165,,
+128,Nguyễn Thị Anh Thư,Thư,,,,0945093926,,
+129,Hoàng Thị Ngọc Ánh,Ánh,,anhhtn@soict.hust.edu.vn,,0988541920,,
+130,Nguyễn Thị Kim Cúc,Cúc,,,,0982566871,,
+131,Nguyễn Xuân Lợi,Lợi,,,,0974532384,,
+132,Lê Thái Bảo,Bảo,,,,0358386523,,
+133,Nguyễn Thị Hiền,Hiền,,hiennt@soict.hust.edu.vn,,0988620822,,0
+134,Nguyễn Thanh Nguyệt,Nguyệt,,nguyetnt@soict.hust.edu.vn,,0904368484,,0
+135,Phạm Thị Ánh Tuyết,Tuyết,,tuyetpta@soict.hust.edu.vn,,098210519,,0
+136,Nguyễn Thị Hoàng Lan,Lan,,,,0912818179,,128
+137,Đặng Văn Chuyết,Chuyết,,chuyetdv@soict.hust.edu.vn,,0903289551,,128
+138,Lương Mạnh Bá,Bá,,balm@soict.hust.edu.vn,,0915061199,,128
+139,Bùi Thị Hòa,Hòa,,,,0904206969,,128
+140,Đỗ Văn Uy,Uy,,,,0904281078,,128
+141,Phạm Kim Linh,Linh,,,,0983058487,,128
+142,Nguyễn Thị Quỳnh Trang,Trang,,,,0989253789,,128
+143,Tạ Thị Thủy,Thủy,,,,0904289702,,128
+144,Lê Thị Vân Anh,Anh,,,,0989958246,,128
+145,Nguyễn Thị Gái,Thu,,,,0914660789,,128
+146,Trần Mai Hương,Hương,,,,0904825151,,128
+147,Nguyễn Thị Ngọc Bích (1953-A),Bích A,,,,0904108830,,128
+148,Nguyễn Thị Ngọc Bích (1958-B),Bích B,,Bichb.nguyenngoc@soict.hust.vn,,0903248028,,128
+149,Lưu Ngọc Quang,Quang,,,,0903275640,,128
+150,Phạm Đức Khánh,Khánh,,,,0913253686,,128
+151,Hồ Sỹ Bàng,Bàng,,,,0913546785,,128
+152,Dư Thanh Bình,Bình,,,,0979859568,,128
+153,Tô Văn Nam,Nam,,,,0772799056,,128
+154,Nguyễn Tô Thành,Thành,,,,0982609121,,128
+155,Vũ Thị Thanh Hương,Hương,,,,0973393586,,128

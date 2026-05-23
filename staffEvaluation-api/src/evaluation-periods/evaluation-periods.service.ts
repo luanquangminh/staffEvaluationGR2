@@ -71,6 +71,7 @@ export class EvaluationPeriodsService {
         description: dto.description,
         startDate,
         endDate,
+        isAnonymous: dto.isAnonymous ?? false,
       },
     });
   }
@@ -108,6 +109,7 @@ export class EvaluationPeriodsService {
     if (dto.startDate !== undefined) data.startDate = finalStartDate;
     if (dto.endDate !== undefined) data.endDate = finalEndDate;
     if (dto.status !== undefined) data.status = dto.status;
+    if (dto.isAnonymous !== undefined) data.isAnonymous = dto.isAnonymous;
 
     return this.prisma.evaluationPeriod.update({
       where: { id },

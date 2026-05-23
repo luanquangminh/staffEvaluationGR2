@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsDateString, IsEnum, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsEnum, IsBoolean, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { PeriodStatus } from '@prisma/client';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -26,6 +26,11 @@ export class CreateEvaluationPeriodDto {
   @ApiProperty({ example: '2025-12-31', description: 'End date (ISO format)' })
   @IsDateString()
   endDate: string;
+
+  @ApiPropertyOptional({ example: false, description: 'If true, reviewer identities are hidden from evaluatees. Admins can still reveal them on demand.' })
+  @IsOptional()
+  @IsBoolean()
+  isAnonymous?: boolean;
 }
 
 export class UpdateEvaluationPeriodDto {
@@ -57,4 +62,9 @@ export class UpdateEvaluationPeriodDto {
   @IsOptional()
   @IsEnum(PeriodStatus, { message: 'Status must be draft, active, or closed' })
   status?: PeriodStatus;
+
+  @ApiPropertyOptional({ example: false, description: 'If true, reviewer identities are hidden from evaluatees.' })
+  @IsOptional()
+  @IsBoolean()
+  isAnonymous?: boolean;
 }

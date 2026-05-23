@@ -26,12 +26,19 @@ export class QuestionsController {
   constructor(private questionsService: QuestionsService) { }
 
   @Get()
-  @ApiOperation({ summary: 'Get all evaluation questions (supports optional pagination)' })
+  @ApiOperation({ summary: 'Get all evaluation questions including inactive (supports optional pagination)' })
   @ApiQuery({ name: 'page', required: false, description: 'Page number (1-based). Omit for all results.' })
   @ApiQuery({ name: 'limit', required: false, description: 'Items per page (max 100). Omit for all results.' })
   @ApiResponse({ status: 200, description: 'List of all evaluation criteria' })
   findAll(@Query() pagination: PaginationDto) {
     return this.questionsService.findAll(pagination);
+  }
+
+  @Get('active')
+  @ApiOperation({ summary: 'Get only active (enabled) evaluation questions' })
+  @ApiResponse({ status: 200, description: 'List of active evaluation criteria' })
+  findActive() {
+    return this.questionsService.findActive();
   }
 
   @Get(':id')

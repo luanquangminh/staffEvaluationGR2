@@ -13,9 +13,9 @@ model User {
   passwordHash String?    @map("password_hash")
   provider     String     @default("local")
   microsoftId  String?    @unique @map("microsoft_id")
-  tokenVersion Int        @default(0) @map("token_version")
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
+  tokenVersion Int        @default(0) @map("token_version")
   profile      Profile?
   roles        UserRole[]
 
@@ -69,16 +69,15 @@ model Staff {
   academicdegree      String?
   position            String?
   isPartyMember       Boolean           @default(false) @map("is_party_member")
-
   organizationunitid  Int?              @map("organizationunitid")
-  avatar              String?           @map("avatar")
   bidv                String?
   createdAt           DateTime          @default(now()) @map("created_at")
   updatedAt           DateTime          @updatedAt @map("updated_at")
-  evaluationsGiven    Evaluation[]      @relation("reviewer")
+  avatar              String?           @map("avatar")
   evaluationsReceived Evaluation[]      @relation("evaluatee")
+  evaluationsGiven    Evaluation[]      @relation("reviewer")
   profile             Profile?
-  organizationUnit    OrganizationUnit? @relation(fields: [organizationunitid], references: [id], onDelete: SetNull)
+  organizationUnit    OrganizationUnit? @relation(fields: [organizationunitid], references: [id])
   staffGroups         Staff2Group[]
 
   @@index([organizationunitid])
@@ -92,7 +91,7 @@ model Group {
   createdAt          DateTime          @default(now()) @map("created_at")
   updatedAt          DateTime          @updatedAt @map("updated_at")
   evaluations        Evaluation[]
-  organizationUnit   OrganizationUnit? @relation(fields: [organizationunitid], references: [id], onDelete: SetNull)
+  organizationUnit   OrganizationUnit? @relation(fields: [organizationunitid], references: [id])
   staffGroups        Staff2Group[]
   subjects           Subject[]
 
@@ -119,6 +118,7 @@ model Question {
   description String?
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
+  isActive    Boolean      @default(true) @map("is_active")
   evaluations Evaluation[]
 
   @@map("questions")
@@ -137,14 +137,15 @@ model Subject {
 }
 
 model EvaluationPeriod {
-  id          Int              @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   name        String
   description String?
-  startDate   DateTime         @map("start_date")
-  endDate     DateTime         @map("end_date")
-  status      PeriodStatus     @default(draft)
-  createdAt   DateTime         @default(now()) @map("created_at")
-  updatedAt   DateTime         @updatedAt @map("updated_at")
+  startDate   DateTime     @map("start_date")
+  endDate     DateTime     @map("end_date")
+  status      PeriodStatus @default(draft)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  isAnonymous Boolean      @default(false) @map("is_anonymous")
   evaluations Evaluation[]
 
   @@map("evaluation_periods")
@@ -160,11 +161,11 @@ model Evaluation {
   point        Float            @default(0)
   createdAt    DateTime         @default(now()) @map("created_at")
   modifieddate DateTime         @default(now()) @updatedAt @map("modifieddate")
+  evaluatee    Staff            @relation("evaluatee", fields: [evaluateeid], references: [id], onDelete: Cascade)
   group        Group            @relation(fields: [groupid], references: [id], onDelete: Cascade)
+  period       EvaluationPeriod @relation(fields: [periodid], references: [id], onDelete: Cascade)
   question     Question         @relation(fields: [questionid], references: [id], onDelete: Cascade)
   reviewer     Staff            @relation("reviewer", fields: [reviewerid], references: [id], onDelete: Cascade)
-  evaluatee    Staff            @relation("evaluatee", fields: [evaluateeid], references: [id], onDelete: Cascade)
-  period       EvaluationPeriod @relation(fields: [periodid], references: [id], onDelete: Cascade)
 
   @@unique([reviewerid, evaluateeid, groupid, questionid, periodid], name: "reviewer_evaluatee_group_question_period")
   @@index([reviewerid])
@@ -178,6 +179,12 @@ model Evaluation {
   @@map("evaluations")
 }
 
+model RolePermission {
+  role          String @id
+  resultsAccess String @default("none") @map("results_access")
+
+  @@map("role_permissions")
+}
 
 enum AppRole {
   admin

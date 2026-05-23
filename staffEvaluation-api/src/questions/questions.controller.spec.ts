@@ -8,6 +8,7 @@ describe('QuestionsController', () => {
 
   const mockQuestionsService = {
     findAll: jest.fn(),
+    findActive: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
@@ -55,6 +56,20 @@ describe('QuestionsController', () => {
       const result = await controller.findAll({});
 
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('findActive', () => {
+    it('should return only active questions', async () => {
+      const activeQuestions = [
+        { id: 1, title: 'Active Q', description: null, isActive: true },
+      ];
+      mockQuestionsService.findActive.mockResolvedValue(activeQuestions);
+
+      const result = await controller.findActive();
+
+      expect(result).toEqual(activeQuestions);
+      expect(mockQuestionsService.findActive).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -4,10 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, BarChart3, TrendingUp, Users, Download, CalendarDays, Eye, FileText, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Loader2, BarChart3, TrendingUp, Users, Download, CalendarDays, Eye, FileText, ArrowUpDown, ArrowUp, ArrowDown, Search, Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
@@ -37,6 +41,8 @@ export default function AdminResults() {
 
   const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const [groupOpen, setGroupOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [radarStaff, setRadarStaff] = useState<StaffScoreItem | null>(null);
   const [sortField, setSortField] = useState<SortField>('avgScore');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
@@ -159,6 +165,16 @@ export default function AdminResults() {
     return sorted;
   }, [staffScores, sortField, sortDir]);
 
+  const displayedStaffScores = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return sortedStaffScores;
+    return sortedStaffScores.filter(item => {
+      const name = (item.staff.name || '').toLowerCase();
+      const code = (item.staff.staffcode || '').toLowerCase();
+      return name.includes(q) || code.includes(q);
+    });
+  }, [sortedStaffScores, searchQuery]);
+
   const stats = useMemo(() => {
     return {
       totalEvaluations: filteredEvaluations.length,
@@ -183,7 +199,7 @@ export default function AdminResults() {
   }, [radarStaff, questions]);
 
   const exportToCSV = useCallback(() => {
-    if (!sortedStaffScores.length || !questions) {
+    if (!displayedStaffScores.length || !questions) {
       toast.error('Không có dữ liệu để xuất');
       return;
     }
@@ -192,7 +208,7 @@ export default function AdminResults() {
     questions.forEach(q => headers.push(q.title));
     headers.push('Điểm trung bình');
 
-    const rows = sortedStaffScores.map((item, idx) => {
+    const rows = displayedStaffScores.map((item, idx) => {
       const row: (string | number)[] = [
         idx + 1,
         item.staff.name || '',
@@ -238,10 +254,10 @@ export default function AdminResults() {
     URL.revokeObjectURL(url);
 
     toast.success('Xuất báo cáo thành công');
-  }, [sortedStaffScores, questions, stats, selectedGroup, groups, selectedPeriod]);
+  }, [displayedStaffScores, questions, stats, selectedGroup, groups, selectedPeriod]);
 
   const exportToPDF = useCallback(() => {
-    if (!sortedStaffScores.length || !questions) {
+    if (!displayedStaffScores.length || !questions) {
       toast.error('Không có dữ liệu để xuất');
       return;
     }
@@ -313,7 +329,7 @@ export default function AdminResults() {
       </tr>
     </thead>
     <tbody>
-      ${sortedStaffScores.map((item, idx) => {
+      ${displayedStaffScores.map((item, idx) => {
         const avgClass = item.avgScore >= 3 ? 'avg-high' : item.avgScore >= 2 ? 'avg-mid' : 'avg-low';
         return `<tr>
           <td>${idx + 1}</td>
@@ -345,7 +361,7 @@ export default function AdminResults() {
     };
 
     toast.success('Đã mở cửa sổ in. Chọn "Save as PDF" để lưu file PDF.');
-  }, [sortedStaffScores, questions, stats, selectedGroup, groups, selectedPeriod]);
+  }, [displayedStaffScores, questions, stats, selectedGroup, groups, selectedPeriod]);
 
   if (loadingPeriods) {
     return (
@@ -449,23 +465,60 @@ export default function AdminResults() {
                     Điểm trung bình theo giảng viên — {selectedPeriod?.name}
                   </CardDescription>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="Chọn nhóm" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tất cả nhóm</SelectItem>
-                      {groups?.map(g => (
-                        <SelectItem key={g.id} value={g.id.toString()}>{g.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button onClick={exportToCSV} disabled={staffScores.length === 0}>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Tìm giảng viên..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9 w-56"
+                    />
+                  </div>
+                  <Popover open={groupOpen} onOpenChange={setGroupOpen}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" role="combobox" aria-expanded={groupOpen} className="w-56 justify-between font-normal">
+                        <span className="truncate">
+                          {selectedGroup === 'all'
+                            ? 'Tất cả nhóm'
+                            : groups?.find(g => g.id.toString() === selectedGroup)?.name || 'Chọn nhóm'}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Tìm nhóm..." />
+                        <CommandList>
+                          <CommandEmpty>Không tìm thấy nhóm</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              value="Tất cả nhóm"
+                              onSelect={() => { setSelectedGroup('all'); setGroupOpen(false); }}
+                            >
+                              <Check className={cn("mr-2 h-4 w-4", selectedGroup === 'all' ? 'opacity-100' : 'opacity-0')} />
+                              Tất cả nhóm
+                            </CommandItem>
+                            {groups?.map(g => (
+                              <CommandItem
+                                key={g.id}
+                                value={g.name}
+                                onSelect={() => { setSelectedGroup(g.id.toString()); setGroupOpen(false); }}
+                              >
+                                <Check className={cn("mr-2 h-4 w-4", selectedGroup === g.id.toString() ? 'opacity-100' : 'opacity-0')} />
+                                {g.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <Button onClick={exportToCSV} disabled={displayedStaffScores.length === 0}>
                     <Download className="h-4 w-4 mr-2" />
                     Xuất CSV
                   </Button>
-                  <Button onClick={exportToPDF} disabled={staffScores.length === 0} variant="outline">
+                  <Button onClick={exportToPDF} disabled={displayedStaffScores.length === 0} variant="outline">
                     <FileText className="h-4 w-4 mr-2" />
                     Xuất PDF
                   </Button>
@@ -475,6 +528,8 @@ export default function AdminResults() {
             <CardContent>
               {staffScores.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">Chưa có dữ liệu đánh giá</p>
+              ) : displayedStaffScores.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">Không tìm thấy giảng viên phù hợp</p>
               ) : (
                 <div className="rounded-md border overflow-x-auto">
                   <Table>
@@ -516,7 +571,7 @@ export default function AdminResults() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {sortedStaffScores.map((item, idx) => (
+                      {displayedStaffScores.map((item, idx) => (
                         <TableRow key={item.staff.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setRadarStaff(item)}>
                           <TableCell className="font-mono">{idx + 1}</TableCell>
                           <TableCell className="font-medium">{item.staff.name}</TableCell>
@@ -554,7 +609,7 @@ export default function AdminResults() {
 
       {/* Radar Chart Dialog */}
       <Dialog open={!!radarStaff} onOpenChange={(open) => !open && setRadarStaff(null)}>
-        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
@@ -571,12 +626,31 @@ export default function AdminResults() {
 
           {radarData.length > 0 && (
             <div className="mt-2">
-              <ChartContainer config={radarChartConfig} className="h-[280px] w-full">
-                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
+              <ChartContainer config={radarChartConfig} className="h-[420px] w-full">
+                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="55%">
                   <PolarGrid stroke="hsl(var(--border))" />
                   <PolarAngleAxis
                     dataKey="criterion"
-                    tick={{ fontSize: 11, fill: 'hsl(var(--foreground))' }}
+                    tick={({ x, y, payload, textAnchor }) => {
+                      const label: string = payload.value || '';
+                      const maxChars = 18;
+                      const lines: string[] = [];
+                      let remaining = label;
+                      while (remaining.length > maxChars) {
+                        let breakIdx = remaining.lastIndexOf(' ', maxChars);
+                        if (breakIdx <= 0) breakIdx = maxChars;
+                        lines.push(remaining.slice(0, breakIdx));
+                        remaining = remaining.slice(breakIdx).trimStart();
+                      }
+                      lines.push(remaining);
+                      return (
+                        <text x={x} y={y} textAnchor={textAnchor} fontSize={11} fill="hsl(var(--foreground))">
+                          {lines.map((line, i) => (
+                            <tspan key={i} x={x} dy={i === 0 ? 0 : 14}>{line}</tspan>
+                          ))}
+                        </text>
+                      );
+                    }}
                   />
                   <PolarRadiusAxis
                     angle={90}

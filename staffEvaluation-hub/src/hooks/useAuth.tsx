@@ -17,6 +17,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isModerator: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signInWithHust: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   setAuthFromTokens: (accessToken: string, refreshToken: string) => Promise<void>;
@@ -77,6 +78,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const signInWithHust = useCallback(async (email: string, password: string) => {
+    try {
+      const data = await api.post<{
+        accessToken: string;
+        refreshToken: string;
+        user: AuthUser;
+      }>('/auth/hust-login', { email, password });
+
+      api.setTokens(data.accessToken, data.refreshToken);
+      setUser(data.user);
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  }, []);
+
   const signUp = useCallback(async (email: string, password: string) => {
     try {
       const data = await api.post<{
@@ -112,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAdmin: user?.isAdmin ?? false,
       isModerator: user?.roles?.includes('moderator') ?? false,
       signIn,
+      signInWithHust,
       signUp,
       signOut,
       setAuthFromTokens,

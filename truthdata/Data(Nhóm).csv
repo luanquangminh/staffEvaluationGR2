@@ -1,0 +1,71 @@
+﻿Id,Name
+3,Tin học đại cương
+4,Nhập môn lập trình
+5,Introduction to Programming
+6,Nhập môn CNTT và TT (Tiếng Việt và Tiếng Anh)
+7,Technical Writing and Presentation
+8,"Cấu trúc dữ liệu và thuật toán, Cấu trúc dữ liệu và giải thuật, Data Structures & Algorithms, Thuật toán ứng dụng, Thiết kế và phân tích thuật toán"
+9,"Data Structures and Algorithms Basic Lab, Lập trình C cơ bản, C Programming Language/C Programming Introduction"
+10,"Toán rời rạc, Tối ưu lập kế hoạch, Tính toán tiến hóa, Mathematical Modelling"
+11,"Kiến trúc máy tính, Computer Architecture (bao gồm cả các học phần thực hành), Kiến trúc máy tính tiên tiến"
+12,Kỹ thuật lập trình
+13,Nguyên lý hệ điều hành/Operating Systems
+14,"Mạng máy tính, Máy tính và mạng máy tính/Computer Networks, Mạng thế hệ sau, Các công nghệ truyền thông tiên tiến"
+15,Cơ sở dữ liệu/Database (bao gồm cả các học phần Thực hành Cơ sở dữ liệu/Database lab)
+16,Lập trình hướng đối tượng/Object-Oriented Language and Theory (Java)
+17,Phân tích và thiết kế hệ thống thông tin
+18,Nhập môn Trí tuệ nhân tạo/Trí tuệ nhân tạo-Artificial Intelligence
+19,"Nhập môn công nghệ phần mềm, Software Engineering, Chuyên đề về công nghệ phần mềm, Phát triển phần mềm sử dụng các mô hình ngôn ngữ lớn, Trí tuệ nhân tạo trong CNPM, Các phương pháp Agile, Các phương pháp Agile và Tư duy thiết kế"
+20,Xây dựng chương trình dịch/Compiler Construction/Compiler Construction Lab
+21,"Kỹ năng ITSS học bằng tiếng Nhật 1, Kỹ năng ITSS học bằng tiếng Nhật 2"
+22,Điện tử cho CNTT (gồm cả học phần thực hành)
+23,"Nhập môn an toàn thông tin, Mật mã ứng dụng, AI trong An toàn thông tin, An toàn phần mềm và hệ thống, Ứng dụng TTNT trong an toàn thông tin"
+24,Lập trình mạng (bao gồm: thực hành)/Network Programming
+25,"Đồ họa và hiện thực ảo, Multimedia, trò chơi và các hệ thống giải trí, Nhập môn công nghệ song sinh thực - số và ứng dụng"
+26,Tính toán khoa học
+27,Xử lý tín hiệu
+28,"Hệ nhúng, Phát triển phần mềm nhúng thông minh, Phát triển phần mềm với AUTOSAR"
+29,"Quản trị dự án công nghệ thông tin/Quản trị phát triển phần mềm, Quản trị Dự án CNTT và quản lý thay đổi"
+30,"An ninh mạng, Phòng chống tấn công mạng, Các giải pháp và chính sách An ninh mạng, Các giải pháp an ninh cho mạng doanh nghiệp, Chính sách và Quản trị An ninh mạng"
+31,"Hệ gợi ý, Hệ trợ giúp quyết định, Các hệ thống thông minh, Hệ thống dựa trên tri thức"
+32,"Computer Vision/Thị giác máy tính, Xử lý ảnh, Mô hình tạo sinh hình ảnh và video, Thị giác máy tính"
+33,Công nghệ Web và dịch vụ trực tuyến
+34,"Giao diện và trải nghiệm người dùng/Tương tác người máy, Thiết kế UI/UX cho ô tô"
+35,"Thiết kế và xây dựng phần mềm, Phát triển phần mềm theo chuẩn kỹ năng ITSS, Mẫu thiết kế phần mềm, Kiến trúc phần mềm - các chủ đề nâng cao"
+36,"Đảm bảo chất lượng Phần mềm, Kiểm chứng và thẩm định phần mềm, Mô hình hóa và phân tích phần mềm, Nguyên lý và kỹ thuật phân tích chương trình"
+37,"Nhập môn kỹ thuật truyền thông, Các kỹ thuật truyền thông cho IoT, Các công nghệ truyền thông cho IoT, Các công nghệ truyền thông trên ô tô"
+38,"Các hệ phân tán và ứng dụng/Hệ phân tán/Nguyên lý và mô thức phát triển HPT/Parallel and Distributed Programming, Huấn luyện song song phân tán, Nguyên lý và mô hình phát triển hệ phân tán, Tính toán hiệu năng cao, Điện toán đám mây"
+39,"Thiết kế và triển khai mạng IP, Quản trị mạng, Quản trị mạng và hệ thống"
+40,"Học sâu và ứng dụng, Nhập môn Học máy và khai phá dữ liệu/Machine Learning and Data Mining, Nền tảng AI tạo sinh, Học máy đa thể thức, Phát triển trí tuệ nhân tạo đáng tin cậy, Vân hành hệ thống học máy, Advanced Deep Learning, Statistical Machine Learnin"
+41,"Truyền thông đa phương tiện, Mã hóa dữ liệu đa phương tiện"
+42,"Xử lý ngôn ngữ tự nhiên, Tìm kiếm thông tin, Khai phá Web, Truy vấn dữ liệu, Mô hình ngôn ngữ lớn, Xây dựng Chatbot và các hệ thống hỏi đáp với AI tạo sinh, Tác tử tự quản sử dụng mô hình ngôn ngữ lớn"
+43,"Phát triển ứng dụng cho thiết bị di động, Phát triển ứng dụng cho ô tô, Hệ điều hành cho ô tô"
+44,Mô hình và thuật toán Internet phổ biến
+45,"Lưu trữ và Xử lý dữ liệu lớn, Big Data Storage and Processing, Phân tích đồ thị với dữ liệu lớn"
+46,"IoT và ứng dụng, Lập trình và ảo hóa cho IoT"
+47,"Nhập môn Khoa học dữ liệu, Introduction to Data Science"
+48,Phát triển ứng dụng đa nền tảng
+49,"Tích hợp Hệ thống thông tin, Kiến trúc các hệ thống thông tin và ứng dụng"
+50,"Tích hợp dữ liệu, Tích hợp và Xử lý dữ liệu lớn, Big Data Integration and Processing"
+51,"Web ngữ nghĩa, Semantics Web"
+52,Phát triển hệ thống phần mềm doanh nghiệp
+53,"Tin sinh học, AI tạo sinh trong tin sinh học, y học và chăm sóc sức khoẻ, AI tạo sinh trong thương mại điện tử và marketing số"
+54,"Công nghệ nhận dạng và tổng hợp tiếng nói, Tạo sinh âm thanh"
+55,Các kỹ thuật định vị và ứng dụng
+56,"Blockchain và ứng dụng, Công nghệ và nền tảng chuỗi khối"
+57,Đánh giá hiệu năng mạng
+58,"An toàn thông tin cho IoT, An toàn thông tin cho ô tô, Kiến trúc bảo mật cho ứng dụng IoT"
+59,"Applied Statistics and Experimental Design, Thống kê ứng dụng"
+60,"Data Visualization, Quản trị dữ liệu và trực quan hóa, Data management and Visualization"
+61,"Introduction to Business Analytics/Phân tích nghiệp vụ thông minh, Business Intelligence"
+62,System Programming
+63,Secure Web Development
+64,"Biometric Authentication Systems, Sinh trắc học và khoa học định danh"
+65,Software Security
+66,Malware Analysis
+67,"Digital Forensics, Điều tra số và ứng cứu sự cố"
+68,"Penetration testing and practice, Kiểm thử an toàn bảo mật"
+69,"Data Entrepreneurship in Action, Khởi nghiệp số với Khoa học dữ liệu"
+70,Các xu hướng công nghệ trong chuyển đổi số
+71,Công nghệ tài chính và kinh tế toàn cầu
+72,Chiến lược số và kiến trúc doanh nghiệp

@@ -67,11 +67,15 @@ const App = () => (
                   <Route path="/admin/groups" element={<AdminGroups />} />
                 </Route>
 
+                {/* Results: accessible to all authenticated users (backend enforces role-permission filter) */}
+                <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+                  <Route path="/admin/results" element={<AdminResults />} />
+                </Route>
+
                 {/* Admin-only routes */}
                 <Route element={<ProtectedRoute requireAdminOnly><MainLayout /></ProtectedRoute>}>
                   <Route path="/admin/staff" element={<AdminStaff />} />
                   <Route path="/admin/questions" element={<AdminQuestions />} />
-                  <Route path="/admin/results" element={<AdminResults />} />
                   <Route path="/admin/charts" element={<AdminCharts />} />
                   <Route path="/admin/periods" element={<AdminPeriods />} />
                   <Route path="/admin/roles" element={<AdminRoles />} />

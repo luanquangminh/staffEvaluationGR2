@@ -84,7 +84,7 @@ function setupApiMocks({ existingEvaluations = [] }: { existingEvaluations?: unk
   mockedApi.get.mockImplementation((path: string) => {
     if (path === '/evaluation-periods/active') return Promise.resolve([mockPeriod]);
     if (path === '/evaluations/my-groups') return Promise.resolve([mockGroup]);
-    if (path === '/questions') return Promise.resolve(mockQuestions);
+    if (path === '/questions/active') return Promise.resolve(mockQuestions);
     if (path.startsWith('/evaluations/colleagues/')) return Promise.resolve([mockColleague]);
     if (path.startsWith('/evaluations/my')) return Promise.resolve(existingEvaluations);
     return Promise.resolve([]);

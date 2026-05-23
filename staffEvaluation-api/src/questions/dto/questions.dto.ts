@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
@@ -17,6 +17,11 @@ export class CreateQuestionDto {
   @MaxLength(1000)
   @TrimString()
   description?: string;
+
+  @ApiPropertyOptional({ example: true, description: 'Whether this question is visible to evaluators' })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class UpdateQuestionDto extends PartialType(CreateQuestionDto) { }
