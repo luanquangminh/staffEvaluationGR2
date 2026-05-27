@@ -21,7 +21,7 @@ export default function AuthCallback() {
 
       if (errorParam) {
         const messages: Record<string, string> = {
-          invalid_domain: 'Email không thuộc tổ chức HUST. Vui lòng sử dụng tài khoản @hust.edu.vn hoặc @sis.hust.edu.vn',
+          invalid_domain: 'Email không thuộc tổ chức. Vui lòng sử dụng tài khoản Outlook của tổ chức.',
           server_error: 'Lỗi máy chủ. Vui lòng thử lại.',
           no_code: 'Không nhận được mã xác thực.',
         };
