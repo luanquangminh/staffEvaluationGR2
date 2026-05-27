@@ -186,6 +186,19 @@ model RolePermission {
   @@map("role_permissions")
 }
 
+model ChatAuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    String   @map("user_id")
+  action    String
+  target    String
+  details   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("chat_audit_logs")
+}
+
 enum AppRole {
   admin
   moderator

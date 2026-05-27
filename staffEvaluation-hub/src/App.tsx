@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
+import { ChatWidget } from "./components/ChatWidget";
 
 // Lazy-loaded pages (code splitting)
 const Assessment = lazy(() => import("./pages/Assessment"));
@@ -84,6 +85,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
+            <ChatWidget />
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>

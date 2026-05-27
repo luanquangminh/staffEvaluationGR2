@@ -14,6 +14,7 @@ import { UsersModule } from './users/users.module';
 import { EvaluationPeriodsModule } from './evaluation-periods/evaluation-periods.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { HealthModule } from './health/health.module';
+import { ChatModule } from './chat/chat.module';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { validateEnv } from './config/env.validation';
 
@@ -60,6 +61,7 @@ import { validateEnv } from './config/env.validation';
     OrganizationUnitsModule,
     UsersModule,
     HealthModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [

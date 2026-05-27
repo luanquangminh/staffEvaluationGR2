@@ -11,6 +11,7 @@ const RULES: Rule[] = [
   { key: 'AZURE_CLIENT_ID', required: false },
   { key: 'AZURE_CLIENT_SECRET', required: false },
   { key: 'AZURE_TENANT_ID', required: false },
+  { key: 'OPENROUTER_API_KEY', required: false },
 ];
 
 export function validateEnv(env: NodeJS.ProcessEnv): void {
